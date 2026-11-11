@@ -1,0 +1,19 @@
+{
+  "frozen_at_utc": "2026-11-11T19:53:06.624751+00:00",
+  "upstream_source": "26d2722b0fc9c7f3246389bdf7385ef18862b242",
+  "runtime_image": "public.ecr.aws/skyvern/skyvern@sha256:75be52c5f16e78810c1eee16f8c1a098cc398b1279a6dc857c3e1e4adc0c70aa",
+  "runtime_project_version": "1.0.57",
+  "runtime_source_note": "Same declared version but block.py hash differs from source checkout; no assertion of byte-identical builds. Business extension is loaded from this repository.",
+  "model": "deepseek-flash",
+  "source_hashes": {
+    "procurement/agent.py": "47dc654b49c976824289fc512ad94dfff53a7580600a0357401fa72ccc4749b9",
+    "procurement/domain.py": "467c53a53436c23e977bbf922efad2c03f4d3c96a0a25bb11c274738b3d711ae",
+    "procurement/fixtures.py": "0dffe73eabc397e15297d33829df12d4f513d22860a5c3bd59f795a87d6c55c0",
+    "procurement/server.py": "2eb82befc8da278d36c3e2fb9339df13a82d350d71de8501c76f1c79c14d9515",
+    "procurement/store.py": "66b9d4ca70db77626a64c6077d370ccd68c861e75499294d3d22a5ca7a8e18c6",
+    "procurement/__init__.py": "47007c2f5c12c3156b73b10e96842308a81826cc70f9d3c048fdb184a1845171",
+    "procurement/tests/test_business.py": "d9959b86cfe410ffd2d92cd8be738bbf0786dff21253362c24de8071926d18b0",
+    "procurement/tests/test_upstream_contract.py": "4c83dd285cd71268dc1fb3ffd103606373d69722de7e6dbcfa8b01ceb75e4274"
+  },
+  "case_sha256": "bddda0b95c4e4bde116de0e63d8aa1f64be7d13d5922e5e4e81ae9b2e5e89d21"
+}

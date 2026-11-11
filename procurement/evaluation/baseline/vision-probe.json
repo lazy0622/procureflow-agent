@@ -1,0 +1,19 @@
+{
+  "model": "deepseek-flash",
+  "elapsed_seconds": 8.53,
+  "answer": "{\"quote_id\": \"Q-NORTH-01\", \"pack_size\": 10}",
+  "usage": {
+    "completion_tokens": 19,
+    "prompt_tokens": 802,
+    "total_tokens": 821,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 802
+  },
+  "scope": "image compatibility component probe, not a Skyvern task"
+}

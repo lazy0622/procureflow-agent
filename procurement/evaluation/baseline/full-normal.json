@@ -1,0 +1,217 @@
+{
+  "reference": "DEV-normal-01",
+  "request": {
+    "as_of": "2026-11-11",
+    "currency": "CNY",
+    "max_lead_days": 5,
+    "policy": "verified",
+    "quantity": 20,
+    "reference": "DEV-normal-01",
+    "scenario": "standard",
+    "sku": "BRG-6204"
+  },
+  "status": "verified",
+  "result": {
+    "observations": [
+      {
+        "quote_id": "Q-NORTH-01",
+        "supplier": "Northline",
+        "sku": "BRG-6204",
+        "description": "6204 bearing, sealed, 20mm bore",
+        "price": "120.00",
+        "currency": "CNY",
+        "unit": "box",
+        "pack_size": 10,
+        "stock": 200,
+        "lead_days": 3,
+        "valid_until": "2026-12-31"
+      },
+      {
+        "quote_id": "Q-HARBOR-01",
+        "supplier": "Harbor",
+        "sku": "BRG-6204",
+        "description": "6204 bearing, sealed, 20mm bore",
+        "price": "15.00",
+        "currency": "CNY",
+        "unit": "piece",
+        "pack_size": 1,
+        "stock": 80,
+        "lead_days": 2,
+        "valid_until": "2026-12-31"
+      },
+      {
+        "quote_id": "Q-SUMMIT-01",
+        "supplier": "Summit",
+        "sku": "BRG-6204",
+        "description": "6204 bearing, sealed, 20mm bore",
+        "price": "8.00",
+        "currency": "USD",
+        "unit": "piece",
+        "pack_size": 1,
+        "stock": 100,
+        "lead_days": 2,
+        "valid_until": "2026-12-31"
+      }
+    ],
+    "model_choice": "Q-NORTH-01",
+    "decisions": [
+      {
+        "quote_id": "Q-NORTH-01",
+        "eligible": true,
+        "reasons": [],
+        "total": "240.00"
+      },
+      {
+        "quote_id": "Q-HARBOR-01",
+        "eligible": true,
+        "reasons": [],
+        "total": "300.00"
+      },
+      {
+        "quote_id": "Q-SUMMIT-01",
+        "eligible": false,
+        "reasons": [
+          "currency_mismatch"
+        ],
+        "total": null
+      }
+    ],
+    "collection_run_id": "tsk_595897018418193182",
+    "plan": {
+      "reference": "DEV-normal-01",
+      "quote_id": "Q-NORTH-01",
+      "supplier": "Northline",
+      "sku": "BRG-6204",
+      "quantity": 20,
+      "currency": "CNY",
+      "total": "240.00"
+    },
+    "creation_run_id": "tsk_595897078547735374",
+    "draft": {
+      "id": 1,
+      "reference": "DEV-normal-01",
+      "quote_id": "Q-NORTH-01",
+      "supplier": "Northline",
+      "sku": "BRG-6204",
+      "quantity": 20,
+      "currency": "CNY",
+      "total": "240.00"
+    },
+    "errors": []
+  },
+  "created_at": "2026-11-11 19:44:46",
+  "events": [
+    {
+      "id": 1,
+      "reference": "DEV-normal-01",
+      "stage": "collecting",
+      "detail": {
+        "scenario": "standard"
+      },
+      "created_at": "2026-11-11 19:44:46"
+    },
+    {
+      "id": 2,
+      "reference": "DEV-normal-01",
+      "stage": "collection_run",
+      "detail": {
+        "run_id": "tsk_595897018418193182",
+        "status": "completed",
+        "output": {
+          "offers": [
+            {
+              "quote_id": "Q-NORTH-01",
+              "supplier": "Northline",
+              "sku": "BRG-6204",
+              "description": "6204 bearing, sealed, 20mm bore",
+              "price": "120.00",
+              "currency": "CNY",
+              "unit": "box",
+              "pack_size": 10,
+              "stock": 200,
+              "lead_days": 3,
+              "valid_until": "2026-12-31"
+            },
+            {
+              "quote_id": "Q-HARBOR-01",
+              "supplier": "Harbor",
+              "sku": "BRG-6204",
+              "description": "6204 bearing, sealed, 20mm bore",
+              "price": "15.00",
+              "currency": "CNY",
+              "unit": "piece",
+              "pack_size": 1,
+              "stock": 80,
+              "lead_days": 2,
+              "valid_until": "2026-12-31"
+            },
+            {
+              "quote_id": "Q-SUMMIT-01",
+              "supplier": "Summit",
+              "sku": "BRG-6204",
+              "description": "6204 bearing, sealed, 20mm bore",
+              "price": "8.00",
+              "currency": "USD",
+              "unit": "piece",
+              "pack_size": 1,
+              "stock": 100,
+              "lead_days": 2,
+              "valid_until": "2026-12-31"
+            }
+          ],
+          "selected_quote_id": "Q-NORTH-01",
+          "explanation": "Selected Q-NORTH-01: currency CNY, lead time 3 days is within max 5, valid until 2026-12-31, and stock 200 pieces covers the required 20 pieces as 2 boxes of 10. Total cost is 2 × CNY 120.00 = CNY 240.00. Q-HARBOR-01 is also CNY-compliant but totals 20 × CNY 15.00 = CNY 300.00. Q-SUMMIT-01 is in USD and cannot be compared without currency conversion."
+        },
+        "failure_reason": null,
+        "created_at": "2026-11-11T19:44:46.341069",
+        "started_at": "2026-11-11T19:44:46.356749",
+        "finished_at": "2026-11-11T19:44:59.503068",
+        "step_count": 1,
+        "total_cost": null
+      },
+      "created_at": "2026-11-11 19:45:00"
+    },
+    {
+      "id": 3,
+      "reference": "DEV-normal-01",
+      "stage": "plan",
+      "detail": {
+        "reference": "DEV-normal-01",
+        "quote_id": "Q-NORTH-01",
+        "supplier": "Northline",
+        "sku": "BRG-6204",
+        "quantity": 20,
+        "currency": "CNY",
+        "total": "240.00"
+      },
+      "created_at": "2026-11-11 19:45:00"
+    },
+    {
+      "id": 4,
+      "reference": "DEV-normal-01",
+      "stage": "creation_run",
+      "detail": {
+        "run_id": "tsk_595897078547735374",
+        "status": "completed",
+        "output": null,
+        "failure_reason": null,
+        "created_at": "2026-11-11T19:45:00.952163",
+        "started_at": "2026-11-11T19:45:00.967121",
+        "finished_at": "2026-11-11T19:45:37.213467",
+        "step_count": 2,
+        "total_cost": null
+      },
+      "created_at": "2026-11-11 19:45:38"
+    },
+    {
+      "id": 5,
+      "reference": "DEV-normal-01",
+      "stage": "read_back",
+      "detail": {
+        "draft_id": 1,
+        "errors": []
+      },
+      "created_at": "2026-11-11 19:45:38"
+    }
+  ]
+}

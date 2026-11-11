@@ -1,0 +1,69 @@
+name: procureflow
+
+services:
+  postgres:
+    image: postgres@sha256:df7bca0066e6f60cc3dd32faa70caddec20e2c22b58932f79498e5704b23854a
+    environment:
+      POSTGRES_USER: skyvern
+      POSTGRES_PASSWORD: ${PROCUREMENT_POSTGRES_PASSWORD:?Run local setup first}
+      POSTGRES_DB: skyvern
+    volumes:
+      - procurement_db:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U skyvern]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  skyvern:
+    image: ${PROCUREMENT_SKYVERN_IMAGE:-public.ecr.aws/skyvern/skyvern@sha256:75be52c5f16e78810c1eee16f8c1a098cc398b1279a6dc857c3e1e4adc0c70aa}
+    env_file: .env
+    environment:
+      PORT: "8000"
+      DATABASE_STRING: postgresql+psycopg://skyvern:${PROCUREMENT_POSTGRES_PASSWORD}@postgres:5432/skyvern
+      BROWSER_TYPE: chromium-headless
+    ports:
+      - 127.0.0.1:8020:8000
+    volumes:
+      - ./.skyvern:/app/.skyvern
+      - ./artifacts:/data/artifacts
+      - ./videos:/data/videos
+      - ./har:/data/har
+      - ./downloads:/data/downloads
+      - ./browser_sessions:/data/browser_sessions
+      - ./credential_vault:/data/credential_vault
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/heartbeat', timeout=5)"
+      interval: 10s
+      timeout: 6s
+      retries: 24
+      start_period: 180s
+
+  workbench:
+    image: ${PROCUREMENT_SKYVERN_IMAGE:-public.ecr.aws/skyvern/skyvern@sha256:75be52c5f16e78810c1eee16f8c1a098cc398b1279a6dc857c3e1e4adc0c70aa}
+    command: [python, -m, uvicorn, procurement.server:app, --host, 0.0.0.0, --port, "8091"]
+    working_dir: /extension
+    environment:
+      PYTHONPATH: /extension
+      PROCUREMENT_DATA_DIR: /state
+      PROCUREMENT_SITE_URL: http://workbench:8091
+      SKYVERN_BASE_URL: http://skyvern:8000/v1
+      SKYVERN_CREDENTIALS_FILE: /credentials/credentials.toml
+    ports:
+      - 127.0.0.1:8091:8091
+    volumes:
+      - ./procurement:/extension/procurement:ro
+      - ./.local/business:/state
+      - ./.skyvern:/credentials:ro
+      - ./artifacts:/data/artifacts:ro
+      - ./videos:/data/videos:ro
+
+volumes:
+  procurement_db:

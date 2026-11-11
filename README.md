@@ -1,5 +1,10 @@
 <!-- DOCTOC SKIP -->
 
+> **ProcureFlow · 采购执行与核验 Agent** — Personal business extension based on Skyvern.
+> [项目说明、部署与验收 / Procurement extension](PROCUREMENT.md).
+> Browser execution and the original platform belong to upstream Skyvern;
+> personal business logic, synthetic fixtures and evaluations live in `procurement/`.
+
 <h1 align="center">
  <a href="https://www.skyvern.com">
   <picture>

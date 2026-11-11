@@ -1,0 +1,8 @@
+{
+  "scope": "Real HTTP replay of a completed synthetic purchase; no new model task expected",
+  "equivalent_requests": 16,
+  "all_reused": true,
+  "conflicting_request_status": 409,
+  "event_count_unchanged": true,
+  "draft_identity_unchanged": true
+}

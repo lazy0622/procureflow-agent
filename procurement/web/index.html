@@ -1,0 +1,246 @@
+<section class="hero">
+  <p class="eyebrow">PROCUREMENT OPERATIONS</p>
+  <h1>从采购需求，到可核对的草稿。</h1>
+  <p class="intro">
+    查询供应商报价，核对规格与交期，在采购后台完成草稿并回读确认。
+  </p>
+  <span class="badge">本地演示 · 全部供应商与交易数据均为合成</span>
+</section>
+<div class="workspace">
+  <section class="panel">
+    <h2>新建采购任务</h2>
+    <form id="purchase">
+      <label>任务编号<input name="reference" id="reference" required /></label>
+      <label>商品型号<input name="sku" value="BRG-6204" required /></label>
+      <div class="pair">
+        <label
+          >采购数量（件）<input
+            name="quantity"
+            type="number"
+            min="1"
+            max="10000"
+            value="20"
+            required
+        /></label>
+        <label
+          >最晚交期（天）<input
+            name="max_lead_days"
+            type="number"
+            min="0"
+            max="365"
+            value="5"
+            required
+        /></label>
+      </div>
+      <div class="pair">
+        <label
+          >报价币种<select name="currency">
+            <option>CNY</option>
+            <option>USD</option>
+            <option>EUR</option>
+          </select></label
+        >
+        <label
+          >采购日期<input name="as_of" type="date" value="2026-11-11" required
+        /></label>
+      </div>
+      <label
+        >演示场景<select name="scenario">
+          <option value="standard">正常报价与不同计价单位</option>
+          <option value="expired">最低价报价已过期</option>
+          <option value="shortage">供应商库存不足</option>
+          <option value="mismatch">低价商品型号不同</option>
+          <option value="missing_currency">低价报价缺少币种</option>
+          <option value="response_loss">草稿已保存但响应丢失</option>
+        </select></label
+      >
+      <button id="submit" type="submit">开始采购任务 →</button>
+    </form>
+  </section>
+  <section class="panel result-panel" aria-live="polite">
+    <div class="result-heading">
+      <h2>执行进度与结果</h2>
+      <span id="status" class="badge">等待任务</span>
+    </div>
+    <p id="message">任务运行后，这里将展示报价、选择依据与采购草稿核对结果。</p>
+    <div id="events" class="timeline"></div>
+    <div id="summary"></div>
+    <button id="resume" hidden>恢复此任务</button>
+    <details>
+      <summary>查看完整任务记录</summary>
+      <pre id="raw">暂无记录</pre>
+    </details>
+  </section>
+</div>
+<footer>供应商门户与采购后台均为本地演示环境，系统只创建草稿。</footer>
+<script>
+  const form = document.querySelector("#purchase");
+  const reference = document.querySelector("#reference");
+  let activeReference =
+    new URLSearchParams(location.search).get("reference") || "";
+  reference.value = activeReference || "PO-" + crypto.randomUUID().slice(0, 8);
+  const labels = {
+    queued: "排队中",
+    collecting: "采集报价",
+    creating_draft: "建立草稿",
+    verified: "业务核对通过",
+    review_required: "需要复核",
+    failed: "任务失败",
+    interrupted: "任务已中断",
+  };
+  const stages = {
+    collecting: "读取供应商页面",
+    collection_run: "报价采集结果",
+    plan: "确定采购方案",
+    creation_run: "采购后台操作",
+    read_back: "回读草稿记录",
+    reconcile: "核对已有草稿",
+  };
+  const safe = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (ch) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[ch],
+    );
+  let timer;
+  async function refresh() {
+    const response = await fetch(
+      "/api/jobs/" + encodeURIComponent(activeReference),
+    );
+    if (!response.ok) throw new Error("读取任务失败");
+    const job = await response.json();
+    document.querySelector("#status").textContent =
+      labels[job.status] || job.status;
+    document.querySelector("#raw").textContent = JSON.stringify(job, null, 2);
+    document.querySelector("#events").innerHTML = job.events
+      .map(
+        (event) =>
+          '<div class="event"><span></span><div><strong>' +
+          safe(stages[event.stage] || event.stage) +
+          "</strong><small>" +
+          safe(event.created_at) +
+          "</small></div></div>",
+      )
+      .join("");
+    const result = job.result || {};
+    document.querySelector("#message").textContent =
+      job.status === "verified"
+        ? "采购草稿已建立，回读记录与预期方案一致。"
+        : job.status === "review_required"
+          ? "存在不满足采购条件或无法确认的信息，请检查下方记录。"
+          : job.status === "failed"
+            ? "本次任务未完成。记录已保留，可查看原因并恢复。"
+            : "正在执行，请稍候。";
+    document.querySelector("#summary").innerHTML = result.plan
+      ? '<div class="outcome"><h3>' +
+        safe(result.plan.supplier) +
+        " · " +
+        safe(result.plan.sku) +
+        "</h3><p>" +
+        safe(result.plan.quantity) +
+        " 件 / " +
+        safe(result.plan.currency) +
+        " " +
+        safe(result.plan.total) +
+        "</p><p>草稿编号：" +
+        safe(result.draft?.id || "待建立") +
+        "</p></div>"
+      : "";
+    const reasons = {
+      sku_mismatch: "型号不符",
+      currency_mismatch: "币种不符",
+      currency_missing: "币种缺失",
+      quote_expired: "报价过期",
+      insufficient_stock: "库存不足",
+      delivery_too_late: "交期不符",
+      inconsistent_unit: "计价单位不一致",
+      fractional_pack: "不能整箱采购",
+      invalid_observation: "报价信息不完整",
+      duplicate_quote_identity: "报价编号重复",
+    };
+    if (result.decisions?.length) {
+      document.querySelector("#summary").innerHTML +=
+        '<div class="table-scroll"><table><tr><th>供应商 / 报价</th><th>采购金额</th><th>核对结果</th></tr>' +
+        result.decisions
+          .map(
+            (decision) =>
+              "<tr><td>" +
+              safe(decision.quote_id) +
+              "</td><td>" +
+              safe(decision.total || "—") +
+              "</td><td>" +
+              safe(
+                decision.eligible
+                  ? "符合采购条件"
+                  : decision.reasons
+                      .map((reason) => reasons[reason] || reason)
+                      .join("；"),
+              ) +
+              "</td></tr>",
+          )
+          .join("") +
+        "</table></div>";
+    }
+    document.querySelector("#resume").hidden = ![
+      "failed",
+      "interrupted",
+    ].includes(job.status);
+    if (!["queued", "collecting", "creating_draft"].includes(job.status)) {
+      clearInterval(timer);
+      document.querySelector("#submit").disabled = false;
+    }
+  }
+  function watch() {
+    clearInterval(timer);
+    refresh().catch(showError);
+    timer = setInterval(() => refresh().catch(showError), 2500);
+  }
+  function showError(error) {
+    document.querySelector("#message").textContent = error.message;
+  }
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    document.querySelector("#submit").disabled = true;
+    try {
+      const data = Object.fromEntries(new FormData(form));
+      data.quantity = Number(data.quantity);
+      data.max_lead_days = Number(data.max_lead_days);
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok)
+        throw new Error(
+          response.status === 409
+            ? "此任务编号已用于其他需求，请更换编号。"
+            : "任务提交失败",
+        );
+      activeReference = data.reference;
+      history.replaceState(
+        null,
+        "",
+        "?reference=" + encodeURIComponent(activeReference),
+      );
+      watch();
+    } catch (error) {
+      showError(error);
+      document.querySelector("#submit").disabled = false;
+    }
+  });
+  document.querySelector("#resume").addEventListener("click", async () => {
+    const response = await fetch(
+      "/api/jobs/" + encodeURIComponent(activeReference) + "/resume",
+      { method: "POST" },
+    );
+    if (response.ok) watch();
+    else showError(new Error("当前任务无法恢复"));
+  });
+  if (activeReference) watch();
+</script>

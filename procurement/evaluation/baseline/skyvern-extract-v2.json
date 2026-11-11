@@ -1,0 +1,19 @@
+{
+  "run_id": "tsk_595896906749043438",
+  "status": "completed",
+  "output": {
+    "quote_id": "Q-NORTH-01",
+    "supplier": "Northline",
+    "price": "120.00",
+    "currency": "CNY",
+    "unit": "box",
+    "pack_size": 10
+  },
+  "failure_reason": null,
+  "created_at": "2026-11-11T19:44:20.476687",
+  "started_at": "2026-11-11T19:44:20.493705",
+  "finished_at": "2026-11-11T19:44:26.048279",
+  "step_count": 1,
+  "total_cost": null,
+  "elapsed_seconds": 6.8
+}
