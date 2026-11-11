@@ -81,7 +81,7 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
                 await execute_purchase(request, store)
         except asyncio.CancelledError:
             previous = store.job(request.reference)
-            store.finish(request.reference, "interrupted", previous["result"] or {})
+            store.finish(request.reference, "interrupted", (previous or {}).get("result") or {})
             raise
         except Exception as exc:  # noqa: BLE001 -- worker boundary must persist a terminal outcome
             previous = store.job(request.reference)
@@ -89,7 +89,7 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
                 request.reference,
                 "failed",
                 {
-                    **(previous["result"] or {}),
+                    **((previous or {}).get("result") or {}),
                     "error_type": type(exc).__name__,
                 },
             )

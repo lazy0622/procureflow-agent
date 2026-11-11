@@ -1,0 +1,28 @@
+{
+  "scope": "Attribution audit of one observed paired failure, plus deterministic replay; not additional model trials",
+  "case_id": "h03-unpacked",
+  "same_normalized_observations": true,
+  "baseline_model_choice": "Q-NORTH-01",
+  "verified_model_choice": "Q-NORTH-01",
+  "baseline_written_quote": "Q-NORTH-01",
+  "verified_written_quote": "Q-HARBOR-01",
+  "replay_rule_choice": "Q-HARBOR-01",
+  "rejections": [
+    {
+      "quote_id": "Q-NORTH-01",
+      "eligible": false,
+      "reasons": [
+        "fractional_pack"
+      ],
+      "total": null
+    },
+    {
+      "quote_id": "Q-SUMMIT-01",
+      "eligible": false,
+      "reasons": [
+        "currency_mismatch"
+      ],
+      "total": null
+    }
+  ]
+}

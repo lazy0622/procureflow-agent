@@ -1,0 +1,882 @@
+[
+  {
+    "run_id": "tsk_595896455777477308",
+    "steps": 1,
+    "input_tokens": 6330,
+    "output_tokens": 1001,
+    "reasoning_tokens": 497,
+    "cached_tokens": 0,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595896906749043438",
+    "steps": 1,
+    "input_tokens": 2488,
+    "output_tokens": 167,
+    "reasoning_tokens": 93,
+    "cached_tokens": 0,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595897018418193182",
+    "steps": 1,
+    "input_tokens": 3538,
+    "output_tokens": 1748,
+    "reasoning_tokens": 1274,
+    "cached_tokens": 0,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595897078547735374",
+    "steps": 2,
+    "input_tokens": 14343,
+    "output_tokens": 4019,
+    "reasoning_tokens": 1394,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595897890296554432",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 2084,
+    "reasoning_tokens": 1486,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595897890296554434",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 2092,
+    "reasoning_tokens": 1630,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595897954721063964",
+    "steps": 2,
+    "input_tokens": 14393,
+    "output_tokens": 4317,
+    "reasoning_tokens": 1692,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595897963310998568",
+    "steps": 2,
+    "input_tokens": 14413,
+    "output_tokens": 4325,
+    "reasoning_tokens": 1721,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898147994592504",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1084,
+    "reasoning_tokens": 674,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898147994592506",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1296,
+    "reasoning_tokens": 857,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898195239232848",
+    "steps": 2,
+    "input_tokens": 14395,
+    "output_tokens": 4402,
+    "reasoning_tokens": 1576,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898203829167456",
+    "steps": 2,
+    "input_tokens": 14396,
+    "output_tokens": 5826,
+    "reasoning_tokens": 3166,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898384217794092",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1507,
+    "reasoning_tokens": 1117,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898422872499814",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1173,
+    "reasoning_tokens": 794,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898444347336342",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1174,
+    "reasoning_tokens": 718,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898474412107462",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1507,
+    "reasoning_tokens": 1051,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898491591976692",
+    "steps": 2,
+    "input_tokens": 11573,
+    "output_tokens": 5850,
+    "reasoning_tokens": 3251,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595898530246682400",
+    "steps": 2,
+    "input_tokens": 11597,
+    "output_tokens": 8284,
+    "reasoning_tokens": 5645,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899174491774980",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1491,
+    "reasoning_tokens": 1071,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899174491774982",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1647,
+    "reasoning_tokens": 1201,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899230326349920",
+    "steps": 2,
+    "input_tokens": 14406,
+    "output_tokens": 4848,
+    "reasoning_tokens": 2291,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899234621317224",
+    "steps": 2,
+    "input_tokens": 14467,
+    "output_tokens": 4587,
+    "reasoning_tokens": 1872,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899419304911176",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 2866,
+    "reasoning_tokens": 2290,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899427894845788",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1593,
+    "reasoning_tokens": 1152,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899483729420694",
+    "steps": 2,
+    "input_tokens": 14421,
+    "output_tokens": 3826,
+    "reasoning_tokens": 1319,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899500909289920",
+    "steps": 2,
+    "input_tokens": 14419,
+    "output_tokens": 6496,
+    "reasoning_tokens": 3856,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899655528112718",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 2226,
+    "reasoning_tokens": 1724,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899719952622258",
+    "steps": 2,
+    "input_tokens": 14437,
+    "output_tokens": 4397,
+    "reasoning_tokens": 1610,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899732837524180",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1553,
+    "reasoning_tokens": 1098,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899788672099084",
+    "steps": 2,
+    "input_tokens": 14425,
+    "output_tokens": 4253,
+    "reasoning_tokens": 1561,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899900341248924",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1860,
+    "reasoning_tokens": 1428,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899964765758462",
+    "steps": 2,
+    "input_tokens": 14412,
+    "output_tokens": 4591,
+    "reasoning_tokens": 1877,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595899973355693064",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1349,
+    "reasoning_tokens": 893,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900029190267976",
+    "steps": 2,
+    "input_tokens": 14416,
+    "output_tokens": 3993,
+    "reasoning_tokens": 1555,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900149449352424",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1382,
+    "reasoning_tokens": 959,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900209578894662",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1167,
+    "reasoning_tokens": 750,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900213873861964",
+    "steps": 1,
+    "input_tokens": 3540,
+    "output_tokens": 1296,
+    "reasoning_tokens": 899,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900261118502310",
+    "steps": 1,
+    "input_tokens": 3540,
+    "output_tokens": 1500,
+    "reasoning_tokens": 1060,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900265413469612",
+    "steps": 2,
+    "input_tokens": 14388,
+    "output_tokens": 6195,
+    "reasoning_tokens": 3579,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900316953077230",
+    "steps": 2,
+    "input_tokens": 14410,
+    "output_tokens": 4708,
+    "reasoning_tokens": 2072,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900510226605754",
+    "steps": 1,
+    "input_tokens": 3540,
+    "output_tokens": 1071,
+    "reasoning_tokens": 675,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900510226605756",
+    "steps": 1,
+    "input_tokens": 3540,
+    "output_tokens": 1527,
+    "reasoning_tokens": 1134,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900566061180698",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1728,
+    "reasoning_tokens": 1296,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900574651115310",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1144,
+    "reasoning_tokens": 685,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900621895755638",
+    "steps": 2,
+    "input_tokens": 14463,
+    "output_tokens": 4513,
+    "reasoning_tokens": 1763,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900630485690242",
+    "steps": 2,
+    "input_tokens": 14412,
+    "output_tokens": 4798,
+    "reasoning_tokens": 2103,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900823759216728",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 2520,
+    "reasoning_tokens": 1879,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900836644118650",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1058,
+    "reasoning_tokens": 619,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900883888758956",
+    "steps": 2,
+    "input_tokens": 14414,
+    "output_tokens": 4390,
+    "reasoning_tokens": 1713,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595900896773660866",
+    "steps": 2,
+    "input_tokens": 14384,
+    "output_tokens": 6285,
+    "reasoning_tokens": 3743,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901068572352868",
+    "steps": 1,
+    "input_tokens": 3544,
+    "output_tokens": 1773,
+    "reasoning_tokens": 1342,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901141586797010",
+    "steps": 2,
+    "input_tokens": 14430,
+    "output_tokens": 4133,
+    "reasoning_tokens": 1442,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901150176731608",
+    "steps": 1,
+    "input_tokens": 3544,
+    "output_tokens": 1522,
+    "reasoning_tokens": 1080,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901210306273826",
+    "steps": 2,
+    "input_tokens": 14377,
+    "output_tokens": 6641,
+    "reasoning_tokens": 4019,
+    "cached_tokens": 5888,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901326270390924",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1277,
+    "reasoning_tokens": 890,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901382104965858",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1650,
+    "reasoning_tokens": 1268,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901442234508102",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1208,
+    "reasoning_tokens": 702,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901450824442714",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1109,
+    "reasoning_tokens": 741,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901502364050342",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1775,
+    "reasoning_tokens": 1268,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901549608690628",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1402,
+    "reasoning_tokens": 962,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901566788559858",
+    "steps": 2,
+    "input_tokens": 14430,
+    "output_tokens": 4895,
+    "reasoning_tokens": 2283,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901605443265566",
+    "steps": 2,
+    "input_tokens": 14399,
+    "output_tokens": 4412,
+    "reasoning_tokens": 1908,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901867436270826",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1802,
+    "reasoning_tokens": 1400,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901867436270828",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1704,
+    "reasoning_tokens": 1297,
+    "cached_tokens": 1536,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901931860780362",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1734,
+    "reasoning_tokens": 1315,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901940450714974",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1554,
+    "reasoning_tokens": 1142,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901996285289898",
+    "steps": 2,
+    "input_tokens": 14404,
+    "output_tokens": 4745,
+    "reasoning_tokens": 2215,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595901996285289904",
+    "steps": 2,
+    "input_tokens": 14410,
+    "output_tokens": 5390,
+    "reasoning_tokens": 2769,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902189558818434",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1587,
+    "reasoning_tokens": 1116,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902193853785750",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1476,
+    "reasoning_tokens": 1040,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902253983327982",
+    "steps": 1,
+    "input_tokens": 5698,
+    "output_tokens": 1674,
+    "reasoning_tokens": 1112,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902262573262582",
+    "steps": 1,
+    "input_tokens": 5698,
+    "output_tokens": 1780,
+    "reasoning_tokens": 1350,
+    "cached_tokens": 2432,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902318407837518",
+    "steps": 2,
+    "input_tokens": 14423,
+    "output_tokens": 4555,
+    "reasoning_tokens": 2063,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902326997772126",
+    "steps": 2,
+    "input_tokens": 14410,
+    "output_tokens": 3973,
+    "reasoning_tokens": 1355,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902507386396730",
+    "steps": 1,
+    "input_tokens": 5699,
+    "output_tokens": 1286,
+    "reasoning_tokens": 869,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902511681364032",
+    "steps": 1,
+    "input_tokens": 5699,
+    "output_tokens": 1564,
+    "reasoning_tokens": 1139,
+    "cached_tokens": 2432,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902571810906270",
+    "steps": 2,
+    "input_tokens": 14451,
+    "output_tokens": 4882,
+    "reasoning_tokens": 2087,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902576105873576",
+    "steps": 2,
+    "input_tokens": 14456,
+    "output_tokens": 5189,
+    "reasoning_tokens": 2491,
+    "cached_tokens": 5888,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902782264303978",
+    "steps": 1,
+    "input_tokens": 5696,
+    "output_tokens": 1220,
+    "reasoning_tokens": 787,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902838098878878",
+    "steps": 2,
+    "input_tokens": 14460,
+    "output_tokens": 4661,
+    "reasoning_tokens": 2038,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902859573715410",
+    "steps": 1,
+    "input_tokens": 5696,
+    "output_tokens": 1234,
+    "reasoning_tokens": 800,
+    "cached_tokens": 2432,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595902906818355714",
+    "steps": 2,
+    "input_tokens": 14410,
+    "output_tokens": 5382,
+    "reasoning_tokens": 2755,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595903112976786124",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1565,
+    "reasoning_tokens": 1062,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595903121566720728",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1171,
+    "reasoning_tokens": 674,
+    "cached_tokens": 1408,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595903164516393768",
+    "steps": 3,
+    "input_tokens": 18730,
+    "output_tokens": 10580,
+    "reasoning_tokens": 7397,
+    "cached_tokens": 8960,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595903168811361076",
+    "steps": 3,
+    "input_tokens": 22901,
+    "output_tokens": 5986,
+    "reasoning_tokens": 2399,
+    "cached_tokens": 9088,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595904267567064042",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 2697,
+    "reasoning_tokens": 2104,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_595904353466410010",
+    "steps": 2,
+    "input_tokens": 14359,
+    "output_tokens": 5919,
+    "reasoning_tokens": 3252,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  }
+]

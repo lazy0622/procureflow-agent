@@ -115,8 +115,8 @@ async def execute_purchase(request: PurchaseRequest, store: Store) -> None:
         previous = store.job(reference)
         existing = store.draft(reference)
         if existing and previous and previous["result"] and previous["result"].get("plan"):
-            plan = PurchasePlan.model_validate(previous["result"]["plan"])
-            errors = verify_draft(plan, existing)
+            recovered_plan = PurchasePlan.model_validate(previous["result"]["plan"])
+            errors = verify_draft(recovered_plan, existing)
             store.event(reference, "reconcile", {"draft_id": existing["id"], "errors": errors})
             outcome = "verified" if request.policy == "verified" else "draft_saved_unchecked"
             store.finish(

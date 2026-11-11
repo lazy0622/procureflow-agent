@@ -1,6 +1,7 @@
 ## Original ignores
 .local/
 .env.local
+IMPLEMENTATION_STATUS.md
 
 *.env
 .vscode

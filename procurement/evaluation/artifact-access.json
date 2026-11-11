@@ -1,0 +1,7 @@
+{
+  "screenshot_http_status": 200,
+  "content_type": "image/png",
+  "allowed_origin": "http://127.0.0.1:8080",
+  "screenshot_bytes": 76627,
+  "outside_path_status": 403
+}

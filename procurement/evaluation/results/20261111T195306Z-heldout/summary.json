@@ -1,0 +1,16 @@
+{
+  "scope": "Synthetic task variants, one real-model trial per case and policy",
+  "model": "deepseek-flash",
+  "split": "heldout",
+  "cases": 20,
+  "policies": {
+    "model_only": {
+      "correct": 19,
+      "trials": 20
+    },
+    "verified": {
+      "correct": 20,
+      "trials": 20
+    }
+  }
+}

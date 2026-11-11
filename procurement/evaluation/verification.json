@@ -1,0 +1,21 @@
+{
+  "contract_and_http_tests": {
+    "passed": 34,
+    "failed": 0
+  },
+  "ruff": "passed",
+  "mypy_business_files": {
+    "checked": 5,
+    "errors": 0
+  },
+  "full_upstream_precommit": "not_passed",
+  "full_precommit_boundaries": [
+    "Host-quarantined upstream files",
+    "Windows POSIX/bash limitations",
+    "Upstream formatting changes confined to isolated worktree"
+  ],
+  "source_ownership": "Upstream vendor snapshot followed by personal-extension commit",
+  "upstream_release_automation": "disabled in new private repository",
+  "heldout_business_rules_tuned": false,
+  "post_evaluation_hardening": "Local variable rename for type narrowing and nullable-result access on worker error paths; normal path revalidated by UI smoke."
+}
