@@ -1,0 +1,17 @@
+{
+  "api": {
+    "passed": 4,
+    "trials": 4,
+    "mean_seconds": 0.145
+  },
+  "playwright": {
+    "passed": 3,
+    "trials": 4,
+    "mean_seconds": 2.496
+  },
+  "skyvern": {
+    "passed": 4,
+    "trials": 4,
+    "mean_seconds": 66.004
+  }
+}

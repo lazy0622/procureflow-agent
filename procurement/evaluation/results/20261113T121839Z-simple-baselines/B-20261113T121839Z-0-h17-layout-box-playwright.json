@@ -1,0 +1,8 @@
+{
+  "case": "h17-layout-box",
+  "trial": 0,
+  "strategy": "playwright",
+  "correct": false,
+  "failure": "TimeoutError",
+  "seconds": 5.203
+}

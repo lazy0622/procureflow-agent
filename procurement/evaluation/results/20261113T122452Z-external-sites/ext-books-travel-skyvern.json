@@ -1,0 +1,106 @@
+{
+  "case_id": "ext-books-travel",
+  "url": "https://books.toscrape.com/catalogue/category/books/travel_2/index.html",
+  "strategy": "skyvern",
+  "oracle": [
+    {
+      "full_title": "It's Only the Himalayas",
+      "display_title": "It's Only the Himalayas",
+      "price_gbp": "45.17",
+      "in_stock": true
+    },
+    {
+      "full_title": "Full Moon over Noah’s Ark: An Odyssey to Mount Ararat and Beyond",
+      "display_title": "Full Moon over Noah’s ...",
+      "price_gbp": "49.43",
+      "in_stock": true
+    },
+    {
+      "full_title": "See America: A Celebration of Our National Parks & Treasured Sites",
+      "display_title": "See America: A Celebration ...",
+      "price_gbp": "48.87",
+      "in_stock": true
+    },
+    {
+      "full_title": "Vagabonding: An Uncommon Guide to the Art of Long-Term World Travel",
+      "display_title": "Vagabonding: An Uncommon Guide ...",
+      "price_gbp": "36.94",
+      "in_stock": true
+    },
+    {
+      "full_title": "Under the Tuscan Sun",
+      "display_title": "Under the Tuscan Sun",
+      "price_gbp": "37.33",
+      "in_stock": true
+    }
+  ],
+  "run_meta": {
+    "run_id": "tsk_596526013280818282",
+    "status": "completed",
+    "output": {
+      "items": [
+        {
+          "title": "It's Only the Himalayas",
+          "price_gbp": 45.17,
+          "in_stock": true
+        },
+        {
+          "title": "Full Moon over Noah’s Ark: An Odyssey to Mount Ararat and Beyond",
+          "price_gbp": 49.43,
+          "in_stock": true
+        },
+        {
+          "title": "See America: A Celebration of Our National Parks & Treasured Sites",
+          "price_gbp": 48.87,
+          "in_stock": true
+        },
+        {
+          "title": "Vagabonding: An Uncommon Guide to the Art of Long-Term World Travel",
+          "price_gbp": 36.94,
+          "in_stock": true
+        },
+        {
+          "title": "Under the Tuscan Sun",
+          "price_gbp": 37.33,
+          "in_stock": true
+        }
+      ]
+    },
+    "failure_reason": null,
+    "created_at": "2026-11-13T12:25:35.309772",
+    "started_at": "2026-11-13T12:25:35.339701",
+    "finished_at": "2026-11-13T12:25:46.746645",
+    "step_count": 1,
+    "total_cost": null
+  },
+  "extracted": [
+    {
+      "title": "It's Only the Himalayas",
+      "price_gbp": "45.17",
+      "in_stock": true
+    },
+    {
+      "title": "Full Moon over Noah’s Ark: An Odyssey to Mount Ararat and Beyond",
+      "price_gbp": "49.43",
+      "in_stock": true
+    },
+    {
+      "title": "See America: A Celebration of Our National Parks & Treasured Sites",
+      "price_gbp": "48.87",
+      "in_stock": true
+    },
+    {
+      "title": "Vagabonding: An Uncommon Guide to the Art of Long-Term World Travel",
+      "price_gbp": "36.94",
+      "in_stock": true
+    },
+    {
+      "title": "Under the Tuscan Sun",
+      "price_gbp": "37.33",
+      "in_stock": true
+    }
+  ],
+  "correct": true,
+  "errors": [],
+  "seconds": 12.875
+}

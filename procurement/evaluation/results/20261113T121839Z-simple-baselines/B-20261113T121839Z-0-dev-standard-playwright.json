@@ -1,0 +1,21 @@
+{
+  "case": "dev-standard",
+  "trial": 0,
+  "strategy": "playwright",
+  "correct": true,
+  "result": {
+    "status": "verified",
+    "draft": {
+      "id": 38,
+      "reference": "B-20261113T121839Z-0-dev-standard-playwright",
+      "quote_id": "Q-NORTH-01",
+      "supplier": "Northline",
+      "sku": "BRG-6204",
+      "quantity": 20,
+      "currency": "CNY",
+      "total": "240.00"
+    },
+    "errors": []
+  },
+  "seconds": 3.328
+}

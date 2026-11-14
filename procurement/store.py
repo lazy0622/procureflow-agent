@@ -4,6 +4,7 @@ import json
 import sqlite3
 from collections.abc import Iterator
 from contextlib import contextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -145,3 +146,36 @@ class Store:
                 ).rowcount
                 == 1
             )
+
+    def confirm_job(self, reference: str, plan_hash: str) -> str:
+        """Atomically approve an awaiting_confirmation plan when its hash matches."""
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT status, result FROM jobs WHERE reference=?", (reference,)
+            ).fetchone()
+            if not row:
+                return "not_found"
+            if row["status"] != "awaiting_confirmation":
+                return "invalid_status"
+            result = json.loads(row["result"]) if row["result"] else {}
+            if not plan_hash or result.get("plan_hash") != plan_hash:
+                return "hash_mismatch"
+            result["confirmed_plan_hash"] = plan_hash
+            result["confirmed_at"] = datetime.now(UTC).isoformat()
+            updated = db.execute(
+                "UPDATE jobs SET status='queued', result=? "
+                "WHERE reference=? AND status='awaiting_confirmation'",
+                (json.dumps(result, ensure_ascii=False), reference),
+            ).rowcount
+            if updated != 1:
+                return "invalid_status"
+            db.execute(
+                "INSERT INTO events(reference,stage,detail) VALUES(?,?,?)",
+                (
+                    reference,
+                    "plan_confirmed",
+                    json.dumps({"plan_hash": plan_hash}, ensure_ascii=False),
+                ),
+            )
+            return "confirmed"

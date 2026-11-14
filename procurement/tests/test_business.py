@@ -201,3 +201,147 @@ async def test_resume_reconciles_existing_draft_without_another_browser_run(tmp_
     await execute_purchase(purchase, store)
     assert store.job(purchase.reference)["status"] == "verified"
     assert store.job(purchase.reference)["result"]["reconciled"] is True
+
+
+def test_confirmation_gate_pauses_validates_hash_and_writes_on_approval(tmp_path, monkeypatch):
+    import json
+    import time
+
+    from procurement.agent import SkyvernClient
+
+    offers = offers_for("standard")
+    calls = []
+
+    class FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return offers
+
+    class FakeAsyncClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def get(self, url, params=None):
+            return FakeResponse()
+
+    async def fake_run(self, prompt, url, schema=None, max_steps=8):
+        calls.append(url)
+        if "/suppliers" in url:
+            return {
+                "run_id": "tsk_collect",
+                "status": "completed",
+                "output": {
+                    "offers": offers,
+                    "selected_quote_id": "Q-NORTH-01",
+                    "explanation": "ok",
+                },
+            }
+        plan = json.loads(prompt.split("values: ", 1)[1].split(". Do not pay", 1)[0])
+        app.state.store.create_draft(plan)
+        return {"run_id": "tsk_write", "status": "completed", "output": None}
+
+    monkeypatch.setattr("procurement.agent.httpx.AsyncClient", FakeAsyncClient)
+    monkeypatch.setattr(SkyvernClient, "run", fake_run)
+    app = create_app(tmp_path)
+    payload = request(confirm_before_write=True).model_dump(mode="json")
+
+    with TestClient(app) as client:
+        submit = client.post("/api/jobs", json=payload)
+        assert submit.status_code == 202
+        for _ in range(50):
+            job = client.get("/api/jobs/PO-test").json()
+            if job["status"] == "awaiting_confirmation":
+                break
+            time.sleep(0.02)
+        assert job["status"] == "awaiting_confirmation"
+        assert client.get("/api/drafts/PO-test").status_code == 404
+        plan_hash = job["result"]["plan_hash"]
+
+        bad = client.post("/api/jobs/PO-test/confirm", json={"plan_hash": "0" * 64})
+        assert bad.status_code == 409
+        ok = client.post("/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash})
+        assert ok.status_code == 202
+        assert client.post("/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash}).status_code == 409
+        for _ in range(50):
+            job = client.get("/api/jobs/PO-test").json()
+            if job["status"] == "verified":
+                break
+            time.sleep(0.02)
+        assert job["status"] == "verified"
+        assert client.get("/api/drafts/PO-test").json()["quote_id"] == "Q-NORTH-01"
+        assert len(calls) == 2
+
+
+def test_confirmation_survives_restart_and_blocks_if_quote_changes(tmp_path, monkeypatch):
+    import time
+
+    from procurement.agent import SkyvernClient
+
+    current_offers = offers_for("standard")
+
+    class FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return current_offers
+
+    class FakeAsyncClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def get(self, url, params=None):
+            return FakeResponse()
+
+    async def collect_only(self, prompt, url, schema=None, max_steps=8):
+        if "/purchasing" in url:
+            pytest.fail("Stale confirmation must block draft write")
+        return {
+            "run_id": "tsk_collect",
+            "status": "completed",
+            "output": {
+                "offers": offers_for("standard"),
+                "selected_quote_id": "Q-NORTH-01",
+                "explanation": "ok",
+            },
+        }
+
+    monkeypatch.setattr("procurement.agent.httpx.AsyncClient", FakeAsyncClient)
+    monkeypatch.setattr(SkyvernClient, "run", collect_only)
+
+    with TestClient(create_app(tmp_path)) as client:
+        client.post("/api/jobs", json=request(confirm_before_write=True).model_dump(mode="json"))
+        for _ in range(50):
+            job = client.get("/api/jobs/PO-test").json()
+            if job["status"] == "awaiting_confirmation":
+                break
+            time.sleep(0.02)
+        assert job["status"] == "awaiting_confirmation"
+        plan_hash = job["result"]["plan_hash"]
+
+    current_offers[0]["price"] = "130.00"
+    with TestClient(create_app(tmp_path)) as client:
+        assert client.get("/api/jobs/PO-test").json()["status"] == "awaiting_confirmation"
+        assert client.post("/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash}).status_code == 202
+        for _ in range(50):
+            job = client.get("/api/jobs/PO-test").json()
+            if job["status"] == "review_required":
+                break
+            time.sleep(0.02)
+        assert job["status"] == "review_required"
+        assert job["result"]["errors"] == ["quote_changed_after_confirmation"]
+        assert client.get("/api/drafts/PO-test").status_code == 404

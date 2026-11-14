@@ -1,0 +1,318 @@
+{
+  "case": "h03-unpacked",
+  "trial": 0,
+  "strategy": "skyvern",
+  "job": {
+    "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+    "request": {
+      "as_of": "2026-11-11",
+      "currency": "CNY",
+      "layout": "table",
+      "max_lead_days": 5,
+      "policy": "verified",
+      "quantity": 25,
+      "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+      "scenario": "standard",
+      "sku": "BRG-6204"
+    },
+    "status": "verified",
+    "result": {
+      "observations": [
+        {
+          "quote_id": "Q-NORTH-01",
+          "supplier": "Northline",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "120.00",
+          "currency": "CNY",
+          "unit": "box",
+          "pack_size": 10,
+          "stock": 200,
+          "lead_days": 3,
+          "valid_until": "2026-12-31"
+        },
+        {
+          "quote_id": "Q-HARBOR-01",
+          "supplier": "Harbor",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "15.00",
+          "currency": "CNY",
+          "unit": "piece",
+          "pack_size": 1,
+          "stock": 80,
+          "lead_days": 2,
+          "valid_until": "2026-12-31"
+        },
+        {
+          "quote_id": "Q-SUMMIT-01",
+          "supplier": "Summit",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "8.00",
+          "currency": "USD",
+          "unit": "piece",
+          "pack_size": 1,
+          "stock": 100,
+          "lead_days": 2,
+          "valid_until": "2026-12-31"
+        }
+      ],
+      "model_choice": "Q-NORTH-01",
+      "decisions": [
+        {
+          "quote_id": "Q-NORTH-01",
+          "eligible": false,
+          "reasons": [
+            "fractional_pack"
+          ],
+          "total": null
+        },
+        {
+          "quote_id": "Q-HARBOR-01",
+          "eligible": true,
+          "reasons": [],
+          "total": "375.00"
+        },
+        {
+          "quote_id": "Q-SUMMIT-01",
+          "eligible": false,
+          "reasons": [
+            "currency_mismatch"
+          ],
+          "total": null
+        }
+      ],
+      "collection_run_id": "tsk_596524952423895348",
+      "plan": {
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "quote_id": "Q-HARBOR-01",
+        "supplier": "Harbor",
+        "sku": "BRG-6204",
+        "quantity": 25,
+        "currency": "CNY",
+        "total": "375.00"
+      },
+      "creation_run_id": "tsk_596525016848404834",
+      "draft": {
+        "id": 45,
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "quote_id": "Q-HARBOR-01",
+        "supplier": "Harbor",
+        "sku": "BRG-6204",
+        "quantity": 25,
+        "currency": "CNY",
+        "total": "375.00"
+      },
+      "errors": []
+    },
+    "created_at": "2026-11-13 12:21:28",
+    "events": [
+      {
+        "id": 219,
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "stage": "collecting",
+        "detail": {
+          "scenario": "standard"
+        },
+        "created_at": "2026-11-13 12:21:28"
+      },
+      {
+        "id": 220,
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "stage": "collection_run",
+        "detail": {
+          "run_id": "tsk_596524952423895348",
+          "status": "completed",
+          "output": {
+            "offers": [
+              {
+                "quote_id": "Q-NORTH-01",
+                "supplier": "Northline",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": "120.00",
+                "currency": "CNY",
+                "unit": "box",
+                "pack_size": 10,
+                "stock": 200,
+                "lead_days": 3,
+                "valid_until": "2026-12-31"
+              },
+              {
+                "quote_id": "Q-HARBOR-01",
+                "supplier": "Harbor",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": "15.00",
+                "currency": "CNY",
+                "unit": "piece",
+                "pack_size": 1,
+                "stock": 80,
+                "lead_days": 2,
+                "valid_until": "2026-12-31"
+              },
+              {
+                "quote_id": "Q-SUMMIT-01",
+                "supplier": "Summit",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": "8.00",
+                "currency": "USD",
+                "unit": "piece",
+                "pack_size": 1,
+                "stock": 100,
+                "lead_days": 2,
+                "valid_until": "2026-12-31"
+              }
+            ],
+            "selected_quote_id": "Q-NORTH-01",
+            "explanation": "Q-NORTH-01 is selected because it satisfies the CNY request with 25 pieces: 3 boxes of 10 pieces at CNY 120.00 per box totals CNY 360.00, stock is 200 pieces, and lead time is 3 days. Q-HARBOR-01 would total CNY 375.00 for 25 pieces. Q-SUMMIT-01 is priced in USD, so it does not match the requested currency and is not selected."
+          },
+          "failure_reason": null,
+          "created_at": "2026-11-13T12:21:28.537999",
+          "started_at": "2026-11-13T12:21:28.554088",
+          "finished_at": "2026-11-13T12:21:42.628069",
+          "step_count": 1,
+          "total_cost": null
+        },
+        "created_at": "2026-11-13 12:21:42"
+      },
+      {
+        "id": 221,
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "stage": "plan",
+        "detail": {
+          "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+          "quote_id": "Q-HARBOR-01",
+          "supplier": "Harbor",
+          "sku": "BRG-6204",
+          "quantity": 25,
+          "currency": "CNY",
+          "total": "375.00"
+        },
+        "created_at": "2026-11-13 12:21:42"
+      },
+      {
+        "id": 222,
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "stage": "creation_run",
+        "detail": {
+          "run_id": "tsk_596525016848404834",
+          "status": "completed",
+          "output": null,
+          "failure_reason": null,
+          "created_at": "2026-11-13T12:21:43.101166",
+          "started_at": "2026-11-13T12:21:43.120678",
+          "finished_at": "2026-11-13T12:22:22.797659",
+          "step_count": 2,
+          "total_cost": null
+        },
+        "created_at": "2026-11-13 12:22:24"
+      },
+      {
+        "id": 223,
+        "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+        "stage": "read_back",
+        "detail": {
+          "draft_id": 45,
+          "errors": []
+        },
+        "created_at": "2026-11-13 12:22:24"
+      }
+    ]
+  },
+  "correct": true,
+  "result": {
+    "status": "verified",
+    "observations": [
+      {
+        "quote_id": "Q-NORTH-01",
+        "supplier": "Northline",
+        "sku": "BRG-6204",
+        "description": "6204 bearing, sealed, 20mm bore",
+        "price": "120.00",
+        "currency": "CNY",
+        "unit": "box",
+        "pack_size": 10,
+        "stock": 200,
+        "lead_days": 3,
+        "valid_until": "2026-12-31"
+      },
+      {
+        "quote_id": "Q-HARBOR-01",
+        "supplier": "Harbor",
+        "sku": "BRG-6204",
+        "description": "6204 bearing, sealed, 20mm bore",
+        "price": "15.00",
+        "currency": "CNY",
+        "unit": "piece",
+        "pack_size": 1,
+        "stock": 80,
+        "lead_days": 2,
+        "valid_until": "2026-12-31"
+      },
+      {
+        "quote_id": "Q-SUMMIT-01",
+        "supplier": "Summit",
+        "sku": "BRG-6204",
+        "description": "6204 bearing, sealed, 20mm bore",
+        "price": "8.00",
+        "currency": "USD",
+        "unit": "piece",
+        "pack_size": 1,
+        "stock": 100,
+        "lead_days": 2,
+        "valid_until": "2026-12-31"
+      }
+    ],
+    "model_choice": "Q-NORTH-01",
+    "decisions": [
+      {
+        "quote_id": "Q-NORTH-01",
+        "eligible": false,
+        "reasons": [
+          "fractional_pack"
+        ],
+        "total": null
+      },
+      {
+        "quote_id": "Q-HARBOR-01",
+        "eligible": true,
+        "reasons": [],
+        "total": "375.00"
+      },
+      {
+        "quote_id": "Q-SUMMIT-01",
+        "eligible": false,
+        "reasons": [
+          "currency_mismatch"
+        ],
+        "total": null
+      }
+    ],
+    "collection_run_id": "tsk_596524952423895348",
+    "plan": {
+      "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+      "quote_id": "Q-HARBOR-01",
+      "supplier": "Harbor",
+      "sku": "BRG-6204",
+      "quantity": 25,
+      "currency": "CNY",
+      "total": "375.00"
+    },
+    "creation_run_id": "tsk_596525016848404834",
+    "draft": {
+      "id": 45,
+      "reference": "B-20261113T121839Z-0-h03-unpacked-skyvern",
+      "quote_id": "Q-HARBOR-01",
+      "supplier": "Harbor",
+      "sku": "BRG-6204",
+      "quantity": 25,
+      "currency": "CNY",
+      "total": "375.00"
+    },
+    "errors": []
+  },
+  "seconds": 57.922
+}

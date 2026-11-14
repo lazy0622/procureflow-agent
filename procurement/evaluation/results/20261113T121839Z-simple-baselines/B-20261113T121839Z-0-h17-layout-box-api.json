@@ -1,0 +1,21 @@
+{
+  "case": "h17-layout-box",
+  "trial": 0,
+  "strategy": "api",
+  "correct": true,
+  "result": {
+    "status": "verified",
+    "draft": {
+      "id": 46,
+      "reference": "B-20261113T121839Z-0-h17-layout-box-api",
+      "quote_id": "Q-NORTH-01",
+      "supplier": "Northline",
+      "sku": "BRG-6204",
+      "quantity": 40,
+      "currency": "CNY",
+      "total": "480.00"
+    },
+    "errors": []
+  },
+  "seconds": 0.094
+}

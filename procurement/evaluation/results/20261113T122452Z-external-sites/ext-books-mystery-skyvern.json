@@ -1,0 +1,106 @@
+{
+  "case_id": "ext-books-mystery",
+  "url": "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html",
+  "strategy": "skyvern",
+  "oracle": [
+    {
+      "full_title": "Sharp Objects",
+      "display_title": "Sharp Objects",
+      "price_gbp": "47.82",
+      "in_stock": true
+    },
+    {
+      "full_title": "In a Dark, Dark Wood",
+      "display_title": "In a Dark, Dark ...",
+      "price_gbp": "19.63",
+      "in_stock": true
+    },
+    {
+      "full_title": "The Past Never Ends",
+      "display_title": "The Past Never Ends",
+      "price_gbp": "56.50",
+      "in_stock": true
+    },
+    {
+      "full_title": "A Murder in Time",
+      "display_title": "A Murder in Time",
+      "price_gbp": "16.64",
+      "in_stock": true
+    },
+    {
+      "full_title": "The Murder of Roger Ackroyd (Hercule Poirot #4)",
+      "display_title": "The Murder of Roger ...",
+      "price_gbp": "44.10",
+      "in_stock": true
+    }
+  ],
+  "run_meta": {
+    "run_id": "tsk_596525875841864316",
+    "status": "completed",
+    "output": {
+      "items": [
+        {
+          "title": "Sharp Objects",
+          "price_gbp": 47.82,
+          "in_stock": true
+        },
+        {
+          "title": "In a Dark, Dark Wood",
+          "price_gbp": 19.63,
+          "in_stock": true
+        },
+        {
+          "title": "The Past Never Ends",
+          "price_gbp": 56.5,
+          "in_stock": true
+        },
+        {
+          "title": "A Murder in Time",
+          "price_gbp": 16.64,
+          "in_stock": true
+        },
+        {
+          "title": "The Murder of Roger Ackroyd (Hercule Poirot #4)",
+          "price_gbp": 44.1,
+          "in_stock": true
+        }
+      ]
+    },
+    "failure_reason": null,
+    "created_at": "2026-11-13T12:25:03.224756",
+    "started_at": "2026-11-13T12:25:03.243451",
+    "finished_at": "2026-11-13T12:25:23.747784",
+    "step_count": 1,
+    "total_cost": null
+  },
+  "extracted": [
+    {
+      "title": "Sharp Objects",
+      "price_gbp": "47.82",
+      "in_stock": true
+    },
+    {
+      "title": "In a Dark, Dark Wood",
+      "price_gbp": "19.63",
+      "in_stock": true
+    },
+    {
+      "title": "The Past Never Ends",
+      "price_gbp": "56.50",
+      "in_stock": true
+    },
+    {
+      "title": "A Murder in Time",
+      "price_gbp": "16.64",
+      "in_stock": true
+    },
+    {
+      "title": "The Murder of Roger Ackroyd (Hercule Poirot #4)",
+      "price_gbp": "44.10",
+      "in_stock": true
+    }
+  ],
+  "correct": true,
+  "errors": [],
+  "seconds": 23.422
+}

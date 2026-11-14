@@ -54,6 +54,14 @@
           <option value="response_loss">草稿已保存但响应丢失</option>
         </select></label
       >
+      <label class="checkbox-row"
+        ><input
+          type="checkbox"
+          name="confirm_before_write"
+          id="confirm_before_write"
+          checked
+        />创建草稿前先人工确认采购方案</label
+      >
       <button id="submit" type="submit">开始采购任务 →</button>
     </form>
   </section>
@@ -65,7 +73,10 @@
     <p id="message">任务运行后，这里将展示报价、选择依据与采购草稿核对结果。</p>
     <div id="events" class="timeline"></div>
     <div id="summary"></div>
-    <button id="resume" hidden>恢复此任务</button>
+    <div class="actions">
+      <button id="confirm" hidden>确认方案并填写草稿</button>
+      <button id="resume" hidden>恢复此任务</button>
+    </div>
     <details>
       <summary>查看完整任务记录</summary>
       <pre id="raw">暂无记录</pre>
@@ -82,6 +93,7 @@
   const labels = {
     queued: "排队中",
     collecting: "采集报价",
+    awaiting_confirmation: "等待人工确认",
     creating_draft: "建立草稿",
     verified: "业务核对通过",
     review_required: "需要复核",
@@ -91,6 +103,9 @@
   const stages = {
     collecting: "读取供应商页面",
     collection_run: "报价采集结果",
+    awaiting_confirmation: "等待确认采购方案",
+    plan_confirmed: "人工已确认方案",
+    confirmation_invalidated: "方案变化需重审",
     plan: "确定采购方案",
     creation_run: "采购后台操作",
     read_back: "回读草稿记录",
@@ -132,6 +147,8 @@
     document.querySelector("#message").textContent =
       job.status === "verified"
         ? "采购草稿已建立，回读记录与预期方案一致。"
+        : job.status === "awaiting_confirmation"
+          ? "已选定采购方案，请核对下方报价与金额后确认写入草稿。"
         : job.status === "review_required"
           ? "存在不满足采购条件或无法确认的信息，请检查下方记录。"
           : job.status === "failed"
@@ -187,6 +204,10 @@
           .join("") +
         "</table></div>";
     }
+    const confirmButton = document.querySelector("#confirm");
+    confirmButton.hidden =
+      job.status !== "awaiting_confirmation" || !result.plan_hash;
+    confirmButton.dataset.planHash = result.plan_hash || "";
     document.querySelector("#resume").hidden = ![
       "failed",
       "interrupted",
@@ -211,6 +232,9 @@
       const data = Object.fromEntries(new FormData(form));
       data.quantity = Number(data.quantity);
       data.max_lead_days = Number(data.max_lead_days);
+      data.confirm_before_write = document.querySelector(
+        "#confirm_before_write",
+      ).checked;
       const response = await fetch("/api/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -241,6 +265,24 @@
     );
     if (response.ok) watch();
     else showError(new Error("当前任务无法恢复"));
+  });
+  document.querySelector("#confirm").addEventListener("click", async () => {
+    const btn = document.querySelector("#confirm");
+    btn.disabled = true;
+    try {
+      const response = await fetch(
+        "/api/jobs/" + encodeURIComponent(activeReference) + "/confirm",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan_hash: btn.dataset.planHash }),
+        },
+      );
+      if (response.ok) watch();
+      else showError(new Error("采购方案确认失败或报价已变化"));
+    } finally {
+      btn.disabled = false;
+    }
   });
   if (activeReference) watch();
 </script>

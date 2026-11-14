@@ -91,6 +91,19 @@ label {
   font-size: 13px;
   color: #48625c;
 }
+.checkbox-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.checkbox-row input {
+  width: auto;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+}
 input,
 select {
   font: inherit;

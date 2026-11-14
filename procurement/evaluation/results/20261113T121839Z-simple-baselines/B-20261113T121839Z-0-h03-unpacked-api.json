@@ -1,0 +1,21 @@
+{
+  "case": "h03-unpacked",
+  "trial": 0,
+  "strategy": "api",
+  "correct": true,
+  "result": {
+    "status": "verified",
+    "draft": {
+      "id": 43,
+      "reference": "B-20261113T121839Z-0-h03-unpacked-api",
+      "quote_id": "Q-HARBOR-01",
+      "supplier": "Harbor",
+      "sku": "BRG-6204",
+      "quantity": 25,
+      "currency": "CNY",
+      "total": "375.00"
+    },
+    "errors": []
+  },
+  "seconds": 0.063
+}

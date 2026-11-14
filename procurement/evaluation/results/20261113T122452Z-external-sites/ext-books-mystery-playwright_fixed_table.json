@@ -1,0 +1,43 @@
+{
+  "case_id": "ext-books-mystery",
+  "url": "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html",
+  "strategy": "playwright_fixed_table",
+  "oracle": [
+    {
+      "full_title": "Sharp Objects",
+      "display_title": "Sharp Objects",
+      "price_gbp": "47.82",
+      "in_stock": true
+    },
+    {
+      "full_title": "In a Dark, Dark Wood",
+      "display_title": "In a Dark, Dark ...",
+      "price_gbp": "19.63",
+      "in_stock": true
+    },
+    {
+      "full_title": "The Past Never Ends",
+      "display_title": "The Past Never Ends",
+      "price_gbp": "56.50",
+      "in_stock": true
+    },
+    {
+      "full_title": "A Murder in Time",
+      "display_title": "A Murder in Time",
+      "price_gbp": "16.64",
+      "in_stock": true
+    },
+    {
+      "full_title": "The Murder of Roger Ackroyd (Hercule Poirot #4)",
+      "display_title": "The Murder of Roger ...",
+      "price_gbp": "44.10",
+      "in_stock": true
+    }
+  ],
+  "correct": false,
+  "failure": "TimeoutError",
+  "errors": [
+    "Locator.evaluate: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"table\")\n"
+  ],
+  "seconds": 7.968
+}

@@ -107,6 +107,12 @@ python scripts/evaluate_procurement.py --split heldout
 模型选择了每箱 10 件的报价，规则版本拒绝非整箱采购并改选按件报价。
 这个差异仅属于当前 20 个合成参数变体，不代表真实采购系统或通用 Agent 的准确率。
 
+### 简单方案对照、外部只读验证与人工确认门禁（2026-11-13）
+
+- **简单方案对照**（`scripts/compare_procurement_baselines.py`，4 个已知任务各 1 次）：`api` 4/4（均值 0.145s）、固定选择器 `playwright` 3/4（均值 2.496s，在 `cards` 卡片布局超时失败）、`skyvern` 4/4（均值 66.004s）。API 完备时应优先用 API；Skyvern 价值在于无专用选择器适配布局变化，而非速度。
+- **外部公开站点只读验证**（`scripts/evaluate_external_sites.py`，`books.toscrape.com` 两类目共 10 本书对照实时 HTML）：固定表格选择器 `playwright_fixed_table` 0/2（等待 `table` 超时），`skyvern` 2/2（均值 18.148s，无写入）。
+- **人工确认门禁与任务遥测**：`PurchaseRequest.confirm_before_write=True` 会在浏览器写草稿前停在 `awaiting_confirmation` 并计算 `plan_hash`；`POST /api/jobs/{reference}/confirm` 原子校验摘要后放行，若写前重读报价变化则记录 `quote_changed_after_confirmation` 并阻断写入。`scripts/export_procurement_metrics.py` 另汇总延迟分位数与失败阶段到 `procurement/evaluation/task-telemetry.json`。
+
 ## 当前限制
 
 - 合成环境、三个供应商、一个示例商品族；不代表已接入企业采购系统或真实用户。

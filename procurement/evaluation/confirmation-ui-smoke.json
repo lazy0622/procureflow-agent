@@ -1,0 +1,26 @@
+{
+  "reference": "PO-e8b5237f",
+  "status": "verified",
+  "plan_hash": "25149168e10ad89e140dde12e82f24503f8ac7303986f46c8c380796a13c9c9c",
+  "confirmed_plan_hash": "25149168e10ad89e140dde12e82f24503f8ac7303986f46c8c380796a13c9c9c",
+  "event_stages": [
+    "collecting",
+    "collection_run",
+    "awaiting_confirmation",
+    "plan_confirmed",
+    "plan",
+    "creation_run",
+    "read_back"
+  ],
+  "draft": {
+    "id": 49,
+    "reference": "PO-e8b5237f",
+    "quote_id": "Q-NORTH-01",
+    "supplier": "Northline",
+    "sku": "BRG-6204",
+    "quantity": 20,
+    "currency": "CNY",
+    "total": "240.00"
+  },
+  "console_errors": []
+}

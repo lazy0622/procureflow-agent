@@ -12,7 +12,14 @@ from typing import Any
 import httpx
 from pydantic import BaseModel
 
-from procurement.domain import Offer, PurchasePlan, PurchaseRequest, choose_offer, verify_draft
+from procurement.domain import (
+    Offer,
+    PurchasePlan,
+    PurchaseRequest,
+    choose_offer,
+    plan_digest,
+    verify_draft,
+)
 from procurement.store import Store
 
 
@@ -113,6 +120,7 @@ async def execute_purchase(request: PurchaseRequest, store: Store) -> None:
     site = os.environ.get("PROCUREMENT_SITE_URL", "http://127.0.0.1:8091").rstrip("/")
     try:
         previous = store.job(reference)
+        previous_result = (previous or {}).get("result") or {}
         existing = store.draft(reference)
         if existing and previous and previous["result"] and previous["result"].get("plan"):
             recovered_plan = PurchasePlan.model_validate(previous["result"]["plan"])
@@ -130,85 +138,142 @@ async def execute_purchase(request: PurchaseRequest, store: Store) -> None:
                 },
             )
             return
-        store.finish(reference, "collecting", {})
-        store.event(reference, "collecting", {"scenario": request.scenario})
         browser = SkyvernClient()
-        prompt = (
-            "Read every supplier quotation on this page. Extract the displayed values exactly. "
-            "Do not guess missing currency or convert prices into another unit in the offers. "
-            "If currency is missing use null. Also select the lowest-cost quotation satisfying "
-            "the purchase request, or select null when none qualify. Stock is in pieces; price "
-            "is per displayed unit and whole boxes must be purchased. Request: "
-            + request.model_dump_json(exclude={"policy", "reference", "scenario", "layout"})
-        )
-        collected = await browser.run(
-            prompt,
-            f"{site}/suppliers?scenario={request.scenario}&layout={request.layout}",
-            ObservationBatch.model_json_schema(),
-        )
-        store.event(reference, "collection_run", collected)
-        if collected["status"] != "completed":
-            store.finish(reference, "failed", {"error": "collection_not_completed"})
-            return
-        output = collected["output"]
-        if isinstance(output, str):
-            output = json.loads(output)
-        observed = ObservationBatch.model_validate(output)
-        observations = [offer.model_dump(mode="json") for offer in observed.offers]
-        plan, decisions = choose_offer(request, observations)
-        if request.policy == "model_only":
-            selected = next(
-                (
-                    offer
-                    for offer in observed.offers
-                    if offer.quote_id == observed.selected_quote_id
-                ),
-                None,
-            )
-            plan = (
-                PurchasePlan(
-                    reference=reference,
-                    quote_id=selected.quote_id,
-                    supplier=selected.supplier,
-                    sku=selected.sku,
-                    quantity=request.quantity,
-                    currency=selected.currency or "",
-                    total=(selected.price * request.quantity / selected.pack_size).quantize(
-                        Decimal("0.01")
-                    ),
+        plan: PurchasePlan | None
+        confirmed_hash = previous_result.get("confirmed_plan_hash")
+        if confirmed_hash and previous_result.get("plan"):
+            plan = PurchasePlan.model_validate(previous_result["plan"])
+            result = dict(previous_result)
+            if plan_digest(plan) != confirmed_hash:
+                store.event(
+                    reference,
+                    "confirmation_invalidated",
+                    {"expected_plan_hash": confirmed_hash, "current_plan_hash": plan_digest(plan)},
                 )
-                if selected
-                else None
-            )
-        result = {
-            "observations": observations,
-            "model_choice": observed.selected_quote_id,
-            "decisions": [decision.model_dump(mode="json") for decision in decisions],
-            "collection_run_id": collected["run_id"],
-        }
-        if plan is None:
-            store.finish(reference, "review_required", result)
-            return
-        # Re-read a supplier's public source before any write. This is not a hidden gold answer.
-        if request.policy == "verified":
-            async with httpx.AsyncClient(timeout=15, trust_env=False) as client:
-                response = await client.get(
-                    f"{site}/api/offers", params={"scenario": request.scenario}
-                )
-                response.raise_for_status()
-            original = {item["quote_id"]: Offer.model_validate(item) for item in response.json()}
-            extracted = {item.quote_id: item for item in observed.offers}
-            if original != extracted:
                 store.finish(
                     reference,
                     "review_required",
-                    {
-                        **result,
-                        "errors": ["quote_source_changed_or_extraction_mismatch"],
-                    },
+                    {**result, "errors": ["plan_changed_after_confirmation"]},
                 )
                 return
-        result["plan"] = plan.model_dump(mode="json")
+            if request.policy == "verified":
+                async with httpx.AsyncClient(timeout=15, trust_env=False) as client:
+                    response = await client.get(
+                        f"{site}/api/offers", params={"scenario": request.scenario}
+                    )
+                    response.raise_for_status()
+                latest_offers = response.json()
+                latest_plan, latest_decisions = choose_offer(request, latest_offers)
+                if latest_plan is None or plan_digest(latest_plan) != confirmed_hash:
+                    new_hash = plan_digest(latest_plan) if latest_plan else None
+                    result.pop("confirmed_plan_hash", None)
+                    result["decisions"] = [
+                        decision.model_dump(mode="json") for decision in latest_decisions
+                    ]
+                    store.event(
+                        reference,
+                        "confirmation_invalidated",
+                        {"expected_plan_hash": confirmed_hash, "current_plan_hash": new_hash},
+                    )
+                    store.finish(
+                        reference,
+                        "review_required",
+                        {**result, "errors": ["quote_changed_after_confirmation"]},
+                    )
+                    return
+        else:
+            store.finish(reference, "collecting", {})
+            store.event(reference, "collecting", {"scenario": request.scenario})
+            prompt = (
+                "Read every supplier quotation on this page. Extract the displayed values exactly. "
+                "Do not guess missing currency or convert prices into another unit in the offers. "
+                "If currency is missing use null. Also select the lowest-cost quotation satisfying "
+                "the purchase request, or select null when none qualify. Stock is in pieces; price "
+                "is per displayed unit and whole boxes must be purchased. Request: "
+                + request.model_dump_json(
+                    exclude={"policy", "reference", "scenario", "layout", "confirm_before_write"}
+                )
+            )
+            collected = await browser.run(
+                prompt,
+                f"{site}/suppliers?scenario={request.scenario}&layout={request.layout}",
+                ObservationBatch.model_json_schema(),
+            )
+            store.event(reference, "collection_run", collected)
+            if collected["status"] != "completed":
+                store.finish(reference, "failed", {"error": "collection_not_completed"})
+                return
+            output = collected["output"]
+            if isinstance(output, str):
+                output = json.loads(output)
+            observed = ObservationBatch.model_validate(output)
+            observations = [offer.model_dump(mode="json") for offer in observed.offers]
+            plan, decisions = choose_offer(request, observations)
+            if request.policy == "model_only":
+                selected = next(
+                    (
+                        offer
+                        for offer in observed.offers
+                        if offer.quote_id == observed.selected_quote_id
+                    ),
+                    None,
+                )
+                plan = (
+                    PurchasePlan(
+                        reference=reference,
+                        quote_id=selected.quote_id,
+                        supplier=selected.supplier,
+                        sku=selected.sku,
+                        quantity=request.quantity,
+                        currency=selected.currency or "",
+                        total=(selected.price * request.quantity / selected.pack_size).quantize(
+                            Decimal("0.01")
+                        ),
+                    )
+                    if selected
+                    else None
+                )
+            result = {
+                "observations": observations,
+                "model_choice": observed.selected_quote_id,
+                "decisions": [decision.model_dump(mode="json") for decision in decisions],
+                "collection_run_id": collected["run_id"],
+            }
+            if plan is None:
+                store.finish(reference, "review_required", result)
+                return
+            # Re-read a supplier's public source before any write. This is not a hidden gold answer.
+            if request.policy == "verified":
+                async with httpx.AsyncClient(timeout=15, trust_env=False) as client:
+                    response = await client.get(
+                        f"{site}/api/offers", params={"scenario": request.scenario}
+                    )
+                    response.raise_for_status()
+                original = {
+                    item["quote_id"]: Offer.model_validate(item) for item in response.json()
+                }
+                extracted = {item.quote_id: item for item in observed.offers}
+                if original != extracted:
+                    store.finish(
+                        reference,
+                        "review_required",
+                        {
+                            **result,
+                            "errors": ["quote_source_changed_or_extraction_mismatch"],
+                        },
+                    )
+                    return
+            digest = plan_digest(plan)
+            result["plan"] = plan.model_dump(mode="json")
+            result["plan_hash"] = digest
+            if request.confirm_before_write:
+                store.event(
+                    reference,
+                    "awaiting_confirmation",
+                    {"plan_hash": digest, "plan": result["plan"]},
+                )
+                store.finish(reference, "awaiting_confirmation", result)
+                return
         store.finish(reference, "creating_draft", result)
         store.event(reference, "plan", result["plan"])
         # Reference is the business identity across retries; ERP has its own unique constraint.

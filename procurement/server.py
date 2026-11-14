@@ -11,7 +11,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from procurement.agent import execute_purchase
 from procurement.domain import PurchaseRequest
@@ -37,6 +37,13 @@ class DraftInput(BaseModel):
     def canonical_total(cls, value: Decimal) -> Decimal:
         """Keep semantically equal money values identical across ERP retries."""
         return value.quantize(Decimal("0.01"))
+
+
+class ConfirmInput(BaseModel):
+    """Bind human approval to the exact reviewed purchase plan fingerprint."""
+
+    model_config = ConfigDict(extra="forbid")
+    plan_hash: str = Field(min_length=16, max_length=128)
 
 
 def page(title: str, body: str) -> str:
@@ -202,6 +209,21 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
             raise HTTPException(409, "Only failed or interrupted tasks can be resumed")
         launch(PurchaseRequest.model_validate(job["request"]))
         return {"reference": reference, "status": "queued"}
+
+    @app.post("/api/jobs/{reference}/confirm", status_code=202)
+    async def confirm(reference: str, body: ConfirmInput) -> dict:
+        outcome = store.confirm_job(reference, body.plan_hash)
+        if outcome == "not_found":
+            raise HTTPException(404, "Purchase task not found")
+        if outcome == "invalid_status":
+            raise HTTPException(409, "Only tasks awaiting confirmation can be confirmed")
+        if outcome == "hash_mismatch":
+            raise HTTPException(409, "Purchase plan changed; re-confirmation required")
+        job = store.job(reference)
+        if job is None:
+            raise HTTPException(404, "Purchase task not found")
+        launch(PurchaseRequest.model_validate(job["request"]))
+        return {"reference": reference, "status": "queued", "plan_hash": body.plan_hash}
 
     @app.get("/purchasing", response_class=HTMLResponse)
     def purchasing(reference: str = "", lose_response: bool = False) -> str:

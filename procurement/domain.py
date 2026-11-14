@@ -1,5 +1,7 @@
 """Deterministic procurement rules, independent of model and browser execution."""
 
+import hashlib
+import json
 from datetime import date
 from decimal import Decimal
 from typing import Any, Literal
@@ -22,6 +24,7 @@ class PurchaseRequest(BaseModel):
     ] = "standard"
     policy: Literal["verified", "model_only"] = "verified"
     layout: Literal["table", "cards"] = "table"
+    confirm_before_write: bool = False
 
 
 class Offer(BaseModel):
@@ -145,3 +148,9 @@ def verify_draft(plan: PurchasePlan, record: dict[str, Any]) -> list[str]:
     except (ValueError, ArithmeticError):
         errors.append("draft_total_invalid")
     return errors
+
+
+def plan_digest(plan: PurchasePlan) -> str:
+    """Compute a stable SHA-256 fingerprint for human confirmation binding."""
+    canonical = json.dumps(plan.model_dump(mode="json"), sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()

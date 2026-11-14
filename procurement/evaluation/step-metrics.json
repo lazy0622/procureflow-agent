@@ -878,5 +878,145 @@
     "cached_tokens": 5760,
     "reported_cost": null,
     "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596524278114031550",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1172,
+    "reasoning_tokens": 703,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596524342538541038",
+    "steps": 2,
+    "input_tokens": 14414,
+    "output_tokens": 5164,
+    "reasoning_tokens": 2587,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596524570171805792",
+    "steps": 1,
+    "input_tokens": 3543,
+    "output_tokens": 1451,
+    "reasoning_tokens": 986,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596524626006380686",
+    "steps": 3,
+    "input_tokens": 22719,
+    "output_tokens": 10981,
+    "reasoning_tokens": 7633,
+    "cached_tokens": 9088,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596524952423895348",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1860,
+    "reasoning_tokens": 1390,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596525016848404834",
+    "steps": 2,
+    "input_tokens": 14461,
+    "output_tokens": 4737,
+    "reasoning_tokens": 2168,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596525223006835158",
+    "steps": 1,
+    "input_tokens": 5698,
+    "output_tokens": 1503,
+    "reasoning_tokens": 1067,
+    "cached_tokens": 2432,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596525287431344650",
+    "steps": 2,
+    "input_tokens": 14450,
+    "output_tokens": 3955,
+    "reasoning_tokens": 1350,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596525875841864316",
+    "steps": 1,
+    "input_tokens": 27558,
+    "output_tokens": 5569,
+    "reasoning_tokens": 4059,
+    "cached_tokens": 3968,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596526013280818282",
+    "steps": 1,
+    "input_tokens": 7364,
+    "output_tokens": 469,
+    "reasoning_tokens": 275,
+    "cached_tokens": 768,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596529346175440030",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1473,
+    "reasoning_tokens": 1072,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596529423484851406",
+    "steps": 2,
+    "input_tokens": 14401,
+    "output_tokens": 5680,
+    "reasoning_tokens": 3105,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596529805736940864",
+    "steps": 1,
+    "input_tokens": 3542,
+    "output_tokens": 1640,
+    "reasoning_tokens": 1037,
+    "cached_tokens": 2176,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
+  },
+  {
+    "run_id": "tsk_596529874456417648",
+    "steps": 2,
+    "input_tokens": 14353,
+    "output_tokens": 5522,
+    "reasoning_tokens": 2962,
+    "cached_tokens": 5760,
+    "reported_cost": null,
+    "cost_note": "Custom-model pricing is not calibrated; zero is not free"
   }
 ]

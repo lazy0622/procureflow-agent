@@ -1,0 +1,52 @@
+{
+  "scope": "Known synthetic regression tasks; shared deterministic business rules",
+  "strategies": [
+    "api",
+    "playwright",
+    "skyvern"
+  ],
+  "trials_per_case": 1,
+  "cases": [
+    {
+      "id": "dev-standard",
+      "split": "development",
+      "request": {},
+      "quote_id": "Q-NORTH-01",
+      "total": "240.00"
+    },
+    {
+      "id": "dev-response-loss",
+      "split": "development",
+      "request": {
+        "scenario": "response_loss"
+      },
+      "quote_id": "Q-NORTH-01",
+      "total": "240.00"
+    },
+    {
+      "id": "h03-unpacked",
+      "split": "heldout",
+      "request": {
+        "quantity": 25
+      },
+      "quote_id": "Q-HARBOR-01",
+      "total": "375.00"
+    },
+    {
+      "id": "h17-layout-box",
+      "split": "heldout",
+      "request": {
+        "layout": "cards",
+        "quantity": 40
+      },
+      "quote_id": "Q-NORTH-01",
+      "total": "480.00"
+    }
+  ],
+  "notes": [
+    "API has a complete source and write interface in this fixture.",
+    "Fixed Playwright supports table layout only; cards failures are retained.",
+    "Skyvern includes model extraction and browser writing; not an inner-loop ablation.",
+    "HTTP/browser times include task execution; costs are not calibrated."
+  ]
+}
