@@ -1,6 +1,6 @@
 # ProcureFlow · 报价采集与采购草稿核验 Agent
 
-基于 Skyvern `26d2722b0fc9c7f3246389bdf7385ef18862b242` 的个人二次开发项目。
+基于 Skyvern `26d2722b0fc9c7f3246389bdf7385ef18862b242` 构建的个人项目。
 保留 AGPL-3.0 与上游署名。Skyvern 提供浏览器执行、任务 API、工作流和原有界面。
 本项目的业务扩展位于 `procurement/`，开发过程及实测结论按下表更新。
 
@@ -28,7 +28,7 @@
 
 本地配置 `.env`、`.local/`、浏览器轨迹和运行数据库不提交 Git。
 
-原始上游说明见 [README.md](README.md)。
+原始上游说明见 [UPSTREAM_README.md](UPSTREAM_README.md)。
 
 ## 本地启动
 
