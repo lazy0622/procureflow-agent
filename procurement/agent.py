@@ -20,6 +20,7 @@ from procurement.domain import (
     plan_digest,
     verify_draft,
 )
+from procurement.faults import crash_point
 from procurement.store import Store
 
 
@@ -276,6 +277,7 @@ async def execute_purchase(request: PurchaseRequest, store: Store) -> None:
                 return
         store.finish(reference, "creating_draft", result)
         store.event(reference, "plan", result["plan"])
+        crash_point("before_browser_write")
         # Reference is the business identity across retries; ERP has its own unique constraint.
         existing = store.draft(reference)
         if existing is None:
@@ -290,6 +292,7 @@ async def execute_purchase(request: PurchaseRequest, store: Store) -> None:
             )
             store.event(reference, "creation_run", created)
             result["creation_run_id"] = created["run_id"]
+            crash_point("before_read_back")
         record = store.draft(reference)
         if record is None:
             store.finish(reference, "failed", {**result, "errors": ["draft_not_found"]})

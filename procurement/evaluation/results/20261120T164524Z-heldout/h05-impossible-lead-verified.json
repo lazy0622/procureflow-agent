@@ -1,0 +1,170 @@
+{
+  "case_id": "h05-impossible-lead",
+  "split": "heldout",
+  "policy": "verified",
+  "elapsed_seconds": 12.5,
+  "correct": true,
+  "expected_quote_id": null,
+  "job": {
+    "reference": "E-20261120T164524Z-h05-impossible-lead-verified",
+    "request": {
+      "as_of": "2026-11-11",
+      "confirm_before_write": false,
+      "currency": "CNY",
+      "layout": "table",
+      "max_lead_days": 1,
+      "policy": "verified",
+      "quantity": 20,
+      "reference": "E-20261120T164524Z-h05-impossible-lead-verified",
+      "scenario": "standard",
+      "sku": "BRG-6204"
+    },
+    "status": "review_required",
+    "result": {
+      "observations": [
+        {
+          "quote_id": "Q-NORTH-01",
+          "supplier": "Northline",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "120.0",
+          "currency": "CNY",
+          "unit": "box",
+          "pack_size": 10,
+          "stock": 200,
+          "lead_days": 3,
+          "valid_until": "2026-12-31"
+        },
+        {
+          "quote_id": "Q-HARBOR-01",
+          "supplier": "Harbor",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "15.0",
+          "currency": "CNY",
+          "unit": "piece",
+          "pack_size": 1,
+          "stock": 80,
+          "lead_days": 2,
+          "valid_until": "2026-12-31"
+        },
+        {
+          "quote_id": "Q-SUMMIT-01",
+          "supplier": "Summit",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "8.0",
+          "currency": "USD",
+          "unit": "piece",
+          "pack_size": 1,
+          "stock": 100,
+          "lead_days": 2,
+          "valid_until": "2026-12-31"
+        }
+      ],
+      "model_choice": null,
+      "decisions": [
+        {
+          "quote_id": "Q-NORTH-01",
+          "eligible": false,
+          "reasons": [
+            "delivery_too_late"
+          ],
+          "total": null
+        },
+        {
+          "quote_id": "Q-HARBOR-01",
+          "eligible": false,
+          "reasons": [
+            "delivery_too_late"
+          ],
+          "total": null
+        },
+        {
+          "quote_id": "Q-SUMMIT-01",
+          "eligible": false,
+          "reasons": [
+            "currency_mismatch",
+            "delivery_too_late"
+          ],
+          "total": null
+        }
+      ],
+      "collection_run_id": "tsk_599191684848782880"
+    },
+    "created_at": "2026-11-20 16:49:45",
+    "events": [
+      {
+        "id": 285,
+        "reference": "E-20261120T164524Z-h05-impossible-lead-verified",
+        "stage": "collecting",
+        "detail": {
+          "scenario": "standard"
+        },
+        "created_at": "2026-11-20 16:49:45"
+      },
+      {
+        "id": 287,
+        "reference": "E-20261120T164524Z-h05-impossible-lead-verified",
+        "stage": "collection_run",
+        "detail": {
+          "run_id": "tsk_599191684848782880",
+          "status": "completed",
+          "output": {
+            "offers": [
+              {
+                "quote_id": "Q-NORTH-01",
+                "supplier": "Northline",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": 120.0,
+                "currency": "CNY",
+                "unit": "box",
+                "pack_size": 10,
+                "stock": 200,
+                "lead_days": 3,
+                "valid_until": "2026-12-31"
+              },
+              {
+                "quote_id": "Q-HARBOR-01",
+                "supplier": "Harbor",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": 15.0,
+                "currency": "CNY",
+                "unit": "piece",
+                "pack_size": 1,
+                "stock": 80,
+                "lead_days": 2,
+                "valid_until": "2026-12-31"
+              },
+              {
+                "quote_id": "Q-SUMMIT-01",
+                "supplier": "Summit",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": 8.0,
+                "currency": "USD",
+                "unit": "piece",
+                "pack_size": 1,
+                "stock": 100,
+                "lead_days": 2,
+                "valid_until": "2026-12-31"
+              }
+            ],
+            "selected_quote_id": null,
+            "explanation": "No quotation satisfies the purchase request. Q-NORTH-01, Q-HARBOR-01, and Q-SUMMIT-01 all have lead_days greater than max_lead_days 1; Q-SUMMIT-01 is also in USD rather than the requested CNY."
+          },
+          "failure_reason": null,
+          "created_at": "2026-11-20T16:49:45.645629",
+          "started_at": "2026-11-20T16:49:45.660464",
+          "finished_at": "2026-11-20T16:49:54.571317",
+          "step_count": 1,
+          "total_cost": null
+        },
+        "created_at": "2026-11-20 16:49:55"
+      }
+    ]
+  },
+  "actual_draft": null
+}

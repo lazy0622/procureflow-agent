@@ -56,6 +56,7 @@ services:
       PROCUREMENT_SITE_URL: http://workbench:8091
       SKYVERN_BASE_URL: http://skyvern:8000/v1
       SKYVERN_CREDENTIALS_FILE: /credentials/credentials.toml
+      PROCUREMENT_CRASH_AT: ${PROCUREMENT_CRASH_AT:-}
     ports:
       - 127.0.0.1:8091:8091
     volumes:

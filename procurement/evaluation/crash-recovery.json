@@ -1,0 +1,73 @@
+{
+  "scope": "Real Skyvern + DeepSeek jobs on the synthetic workbench; one run per point",
+  "run": "20261120T172038Z",
+  "passed": 3,
+  "cases": 3,
+  "results": [
+    {
+      "crash_point": "after_draft_commit",
+      "simulates": "ERP committed the draft; process died before replying",
+      "reference": "CRASH-20261120T172038Z-after-draft-commit",
+      "process_exit_code": 70,
+      "seconds_until_crash": 48.3,
+      "status_after_restart": "interrupted",
+      "drafts_before_resume": 1,
+      "final_status": "verified",
+      "reconciled_existing_draft": true,
+      "drafts_final": 1,
+      "draft_id": 106,
+      "stages": [
+        "collecting",
+        "collection_run",
+        "plan",
+        "reconcile"
+      ],
+      "passed": true
+    },
+    {
+      "crash_point": "before_read_back",
+      "simulates": "browser write finished; process died before verification",
+      "reference": "CRASH-20261120T172038Z-before-read-back",
+      "process_exit_code": 70,
+      "seconds_until_crash": 62.8,
+      "status_after_restart": "interrupted",
+      "drafts_before_resume": 1,
+      "final_status": "verified",
+      "reconciled_existing_draft": true,
+      "drafts_final": 1,
+      "draft_id": 107,
+      "stages": [
+        "collecting",
+        "collection_run",
+        "plan",
+        "creation_run",
+        "reconcile"
+      ],
+      "passed": true
+    },
+    {
+      "crash_point": "before_browser_write",
+      "simulates": "human confirmed the plan; process died before writing",
+      "reference": "CRASH-20261120T172038Z-before-browser-write",
+      "process_exit_code": 70,
+      "seconds_until_crash": 18.4,
+      "status_after_restart": "interrupted",
+      "drafts_before_resume": 0,
+      "final_status": "verified",
+      "reconciled_existing_draft": false,
+      "drafts_final": 1,
+      "draft_id": 108,
+      "stages": [
+        "collecting",
+        "collection_run",
+        "awaiting_confirmation",
+        "plan_confirmed",
+        "plan",
+        "plan",
+        "creation_run",
+        "read_back"
+      ],
+      "passed": true
+    }
+  ]
+}

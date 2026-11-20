@@ -1,0 +1,32 @@
+{
+  "scope": "Held-out synthetic tasks, independent repeated real-model runs",
+  "runs": [
+    "20261111T195306Z-heldout",
+    "20261120T164524Z-heldout",
+    "20261120T170405Z-heldout"
+  ],
+  "policies": {
+    "model_only": {
+      "tasks": 20,
+      "trials_per_task": 3,
+      "correct_trials": 57,
+      "total_trials": 60,
+      "pass^1": 0.95,
+      "pass^2": 0.95,
+      "pass^3": 0.95,
+      "tasks_not_always_correct": {
+        "h03-unpacked": "0/3"
+      }
+    },
+    "verified": {
+      "tasks": 20,
+      "trials_per_task": 3,
+      "correct_trials": 60,
+      "total_trials": 60,
+      "pass^1": 1.0,
+      "pass^2": 1.0,
+      "pass^3": 1.0,
+      "tasks_not_always_correct": {}
+    }
+  }
+}

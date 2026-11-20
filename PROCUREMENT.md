@@ -113,6 +113,12 @@ python scripts/evaluate_procurement.py --split heldout
 - **外部公开站点只读验证**（`scripts/evaluate_external_sites.py`，`books.toscrape.com` 两类目共 10 本书对照实时 HTML）：固定表格选择器 `playwright_fixed_table` 0/2（等待 `table` 超时），`skyvern` 2/2（均值 18.148s，无写入）。
 - **人工确认门禁与任务遥测**：`PurchaseRequest.confirm_before_write=True` 会在浏览器写草稿前停在 `awaiting_confirmation` 并计算 `plan_hash`；`POST /api/jobs/{reference}/confirm` 原子校验摘要后放行，若写前重读报价变化则记录 `quote_changed_after_confirmation` 并阻断写入。`scripts/export_procurement_metrics.py` 另汇总延迟分位数与失败阶段到 `procurement/evaluation/task-telemetry.json`。
 
+### 重复试验、延迟成本与崩溃恢复（2026-11-21）
+
+- **三次独立重复**（`scripts/summarize_repeats.py` → `procurement/evaluation/heldout-repeats.json`）：模型直接选报价 57/60，pass^3 = 0.95，h03 三次全错；业务规则 60/60，pass^3 = 1.0。
+- **分阶段延迟与成本**（`scripts/analyze_latency_cost.py` → `procurement/evaluation/latency-cost.json`）：128 次作业均值 48.6s、p95 79.1s；写草稿的作业中浏览器填写占 70.7% 耗时，填写输出 token 中 50% 为推理 token；按 DeepSeek 公开价估算 0.0107 / 0.0054 美元每次（高峰 / 低谷）。
+- **进程崩溃恢复**（`procurement/faults.py`、`scripts/crash_recovery_test.py` → `procurement/evaluation/crash-recovery.json`）：在 `after_draft_commit`、`before_read_back`、`before_browser_write` 三处 `os._exit(70)`，重启后为 `interrupted`，恢复后 3/3 为 `verified` 且每个单号 1 张草稿。钩子仅在设置 `PROCUREMENT_CRASH_AT` 时生效。
+
 ## 当前限制
 
 - 合成环境、三个供应商、一个示例商品族；不代表已接入企业采购系统或真实用户。
@@ -123,6 +129,6 @@ python scripts/evaluate_procurement.py --split heldout
   由人工恢复并对账，不声称生产分布式恢复或任意外部系统 exactly-once。
 - 开发源码固定提交与镜像均标 1.0.57，但关键模块字节摘要不同；运行以已固定镜像摘要为准。
   没有修改容器内上游内核，业务代码直接挂载本仓库 `procurement/`。
-- 上游对自定义模型的成本值可能为零，不能解释成免费。实际 token 可另按步骤统计，
-  未对齐服务商账单前不填写人民币成本或整体降本比例。
+- 上游对自定义模型的成本值可能为零，不能解释成免费。成本按步骤 token 和公开价格估算，
+  未对齐服务商账单，不声称整体降本比例。
 - 长期记忆、自动技能学习和 RSI 尚未实现，不写成已有功能。

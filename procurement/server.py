@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from procurement.agent import execute_purchase
 from procurement.domain import PurchaseRequest
+from procurement.faults import crash_point
 from procurement.fixtures import offers_for
 from procurement.store import IntentConflict, Store
 
@@ -263,6 +264,7 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
             raise HTTPException(409, str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(422, "Invalid purchase draft fields") from exc
+        crash_point("after_draft_commit")
         if lose_response and not record["reused"]:
             raise HTTPException(
                 503, "Simulated response loss after draft was saved; look up reference"
