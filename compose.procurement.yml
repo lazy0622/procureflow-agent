@@ -22,6 +22,8 @@ services:
       PORT: "8000"
       DATABASE_STRING: postgresql+psycopg://skyvern:${PROCUREMENT_POSTGRES_PASSWORD}@postgres:5432/skyvern
       BROWSER_TYPE: chromium-headless
+      # Set to http://workbench:8091/llm/v1 to apply PROCUREMENT_REASONING_EFFORT (see llm_gateway.py).
+      OPENAI_COMPATIBLE_API_BASE: ${PROCUREMENT_LLM_API_BASE:-https://api.deepseek.com/v1}
     ports:
       - 127.0.0.1:8020:8000
     volumes:
@@ -57,6 +59,7 @@ services:
       SKYVERN_BASE_URL: http://skyvern:8000/v1
       SKYVERN_CREDENTIALS_FILE: /credentials/credentials.toml
       PROCUREMENT_CRASH_AT: ${PROCUREMENT_CRASH_AT:-}
+      PROCUREMENT_REASONING_EFFORT: ${PROCUREMENT_REASONING_EFFORT:-}
     ports:
       - 127.0.0.1:8091:8091
     volumes:

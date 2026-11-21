@@ -4,6 +4,7 @@ pass^k is the chance that k independent trials of the same task all succeed, est
 per task as C(c, k) / C(n, k) from c successes in n trials, then averaged over tasks.
 """
 
+import argparse
 import json
 from collections import defaultdict
 from math import comb
@@ -13,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "procurement/evaluation/results"
 
 
-def main() -> None:
-    runs = sorted(path.parent for path in RESULTS.glob("*-heldout/summary.json"))
+def main(suffix: str) -> None:
+    runs = sorted(path.parent for path in RESULTS.glob(f"*-heldout{suffix}/summary.json"))
     outcomes: dict[str, dict[str, list[bool]]] = defaultdict(lambda: defaultdict(list))
     for run in runs:
         for path in run.glob("*.json"):
@@ -42,10 +43,12 @@ def main() -> None:
         "runs": [run.name for run in runs],
         "policies": policies,
     }
-    out = ROOT / "procurement/evaluation/heldout-repeats.json"
+    out = ROOT / f"procurement/evaluation/heldout-repeats{suffix}.json"
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--suffix", default="", help="run-directory suffix, e.g. -effort-low")
+    main(parser.parse_args().suffix)

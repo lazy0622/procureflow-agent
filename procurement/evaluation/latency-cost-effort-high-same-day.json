@@ -1,0 +1,105 @@
+{
+  "scope": "Real-model jobs, both policies, runs matching: 20261121T131808Z-heldout",
+  "runs": [
+    "20261121T131808Z-heldout"
+  ],
+  "jobs": 40,
+  "job_seconds": {
+    "n": 40,
+    "mean": 53.5408,
+    "p50": 64.055,
+    "p95": 86.81
+  },
+  "stages": {
+    "collection_run": {
+      "seconds": {
+        "n": 40,
+        "mean": 13.7258,
+        "p50": 13.3372,
+        "p95": 16.5539
+      },
+      "steps": {
+        "n": 40,
+        "mean": 1,
+        "p50": 1.0,
+        "p95": 1
+      },
+      "input_tokens": {
+        "n": 40,
+        "mean": 3865.45,
+        "p50": 3542.0,
+        "p95": 5699
+      },
+      "output_tokens": {
+        "n": 40,
+        "mean": 1621.4,
+        "p50": 1565.0,
+        "p95": 2195
+      },
+      "reasoning_tokens": {
+        "n": 40,
+        "mean": 1169.275,
+        "p50": 1116.0,
+        "p95": 1773
+      }
+    },
+    "creation_run": {
+      "seconds": {
+        "n": 28,
+        "mean": 50.2718,
+        "p50": 48.0636,
+        "p95": 68.9144
+      },
+      "steps": {
+        "n": 28,
+        "mean": 2.0714,
+        "p50": 2.0,
+        "p95": 3
+      },
+      "input_tokens": {
+        "n": 28,
+        "mean": 14867.5357,
+        "p50": 14414.0,
+        "p95": 18722
+      },
+      "output_tokens": {
+        "n": 28,
+        "mean": 5222.8571,
+        "p50": 4791.5,
+        "p95": 7782
+      },
+      "reasoning_tokens": {
+        "n": 28,
+        "mean": 2607.1071,
+        "p50": 2249.5,
+        "p95": 4637
+      }
+    }
+  },
+  "share_of_time_in_jobs_that_wrote_a_draft": {
+    "jobs": 28,
+    "collection_run": 0.198,
+    "creation_run": 0.732
+  },
+  "creation_reasoning_share_of_output": 0.499,
+  "cost_usd_per_job": {
+    "peak": {
+      "n": 40,
+      "mean": 0.0106,
+      "p50": 0.0128,
+      "p95": 0.0189
+    },
+    "off_peak": {
+      "n": 40,
+      "mean": 0.0053,
+      "p50": 0.0064,
+      "p95": 0.0095
+    }
+  },
+  "browser_runs_without_token_counter": 0,
+  "pricing_source": "https://api-docs.deepseek.com/quick_start/pricing (2026-11-21)",
+  "notes": [
+    "Jobs stopped by business rules before writing have no creation_run.",
+    "Cache-hit discounts are ignored; exported counters report 0 cached tokens."
+  ]
+}

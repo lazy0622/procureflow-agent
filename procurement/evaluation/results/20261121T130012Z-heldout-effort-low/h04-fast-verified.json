@@ -1,0 +1,240 @@
+{
+  "case_id": "h04-fast",
+  "split": "heldout",
+  "policy": "verified",
+  "elapsed_seconds": 64.8,
+  "correct": true,
+  "expected_quote_id": "Q-HARBOR-01",
+  "job": {
+    "reference": "E-20261121T130012Z-h04-fast-verified",
+    "request": {
+      "as_of": "2026-11-11",
+      "confirm_before_write": false,
+      "currency": "CNY",
+      "layout": "table",
+      "max_lead_days": 2,
+      "policy": "verified",
+      "quantity": 20,
+      "reference": "E-20261121T130012Z-h04-fast-verified",
+      "scenario": "standard",
+      "sku": "BRG-6204"
+    },
+    "status": "verified",
+    "result": {
+      "observations": [
+        {
+          "quote_id": "Q-NORTH-01",
+          "supplier": "Northline",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "120.00",
+          "currency": "CNY",
+          "unit": "box",
+          "pack_size": 10,
+          "stock": 200,
+          "lead_days": 3,
+          "valid_until": "2026-12-31"
+        },
+        {
+          "quote_id": "Q-HARBOR-01",
+          "supplier": "Harbor",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "15.00",
+          "currency": "CNY",
+          "unit": "piece",
+          "pack_size": 1,
+          "stock": 80,
+          "lead_days": 2,
+          "valid_until": "2026-12-31"
+        },
+        {
+          "quote_id": "Q-SUMMIT-01",
+          "supplier": "Summit",
+          "sku": "BRG-6204",
+          "description": "6204 bearing, sealed, 20mm bore",
+          "price": "8.00",
+          "currency": "USD",
+          "unit": "piece",
+          "pack_size": 1,
+          "stock": 100,
+          "lead_days": 2,
+          "valid_until": "2026-12-31"
+        }
+      ],
+      "model_choice": "Q-HARBOR-01",
+      "decisions": [
+        {
+          "quote_id": "Q-NORTH-01",
+          "eligible": false,
+          "reasons": [
+            "delivery_too_late"
+          ],
+          "total": null
+        },
+        {
+          "quote_id": "Q-HARBOR-01",
+          "eligible": true,
+          "reasons": [],
+          "total": "300.00"
+        },
+        {
+          "quote_id": "Q-SUMMIT-01",
+          "eligible": false,
+          "reasons": [
+            "currency_mismatch"
+          ],
+          "total": null
+        }
+      ],
+      "collection_run_id": "tsk_599504559861748404",
+      "plan": {
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "quote_id": "Q-HARBOR-01",
+        "supplier": "Harbor",
+        "sku": "BRG-6204",
+        "quantity": 20,
+        "currency": "CNY",
+        "total": "300.00"
+      },
+      "plan_hash": "6b9926a139b26cfd6dc37e97ccb68230a4d5edec291e7f78c2a2958f9933e760",
+      "creation_run_id": "tsk_599504619991290638",
+      "draft": {
+        "id": 154,
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "quote_id": "Q-HARBOR-01",
+        "supplier": "Harbor",
+        "sku": "BRG-6204",
+        "quantity": 20,
+        "currency": "CNY",
+        "total": "300.00"
+      },
+      "errors": []
+    },
+    "created_at": "2026-11-21 13:03:52",
+    "events": [
+      {
+        "id": 837,
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "stage": "collecting",
+        "detail": {
+          "scenario": "standard"
+        },
+        "created_at": "2026-11-21 13:03:52"
+      },
+      {
+        "id": 840,
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "stage": "collection_run",
+        "detail": {
+          "run_id": "tsk_599504559861748404",
+          "status": "completed",
+          "output": {
+            "offers": [
+              {
+                "quote_id": "Q-NORTH-01",
+                "supplier": "Northline",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": "120.00",
+                "currency": "CNY",
+                "unit": "box",
+                "pack_size": 10,
+                "stock": 200,
+                "lead_days": 3,
+                "valid_until": "2026-12-31"
+              },
+              {
+                "quote_id": "Q-HARBOR-01",
+                "supplier": "Harbor",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": "15.00",
+                "currency": "CNY",
+                "unit": "piece",
+                "pack_size": 1,
+                "stock": 80,
+                "lead_days": 2,
+                "valid_until": "2026-12-31"
+              },
+              {
+                "quote_id": "Q-SUMMIT-01",
+                "supplier": "Summit",
+                "sku": "BRG-6204",
+                "description": "6204 bearing, sealed, 20mm bore",
+                "price": "8.00",
+                "currency": "USD",
+                "unit": "piece",
+                "pack_size": 1,
+                "stock": 100,
+                "lead_days": 2,
+                "valid_until": "2026-12-31"
+              }
+            ],
+            "selected_quote_id": "Q-HARBOR-01",
+            "explanation": "Q-HARBOR-01 is the lowest-cost quotation that satisfies the request: it is in CNY, has lead_days 2 (within max_lead_days 2), stock 80 pieces (enough for quantity 20), and valid_until 2026-12-31. Q-NORTH-01 is disqualified because lead_days 3 exceeds max_lead_days 2. Q-SUMMIT-01 is disqualified because its currency is USD, not CNY, and no conversion is allowed."
+          },
+          "failure_reason": null,
+          "created_at": "2026-11-21T13:03:52.921972",
+          "started_at": "2026-11-21T13:03:52.941068",
+          "finished_at": "2026-11-21T13:04:05.030093",
+          "step_count": 1,
+          "total_cost": null
+        },
+        "created_at": "2026-11-21 13:04:06"
+      },
+      {
+        "id": 841,
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "stage": "plan",
+        "detail": {
+          "reference": "E-20261121T130012Z-h04-fast-verified",
+          "quote_id": "Q-HARBOR-01",
+          "supplier": "Harbor",
+          "sku": "BRG-6204",
+          "quantity": 20,
+          "currency": "CNY",
+          "total": "300.00"
+        },
+        "created_at": "2026-11-21 13:04:06"
+      },
+      {
+        "id": 845,
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "stage": "creation_run",
+        "detail": {
+          "run_id": "tsk_599504619991290638",
+          "status": "completed",
+          "output": null,
+          "failure_reason": null,
+          "created_at": "2026-11-21T13:04:06.681312",
+          "started_at": "2026-11-21T13:04:06.701586",
+          "finished_at": "2026-11-21T13:04:54.849933",
+          "step_count": 2,
+          "total_cost": null
+        },
+        "created_at": "2026-11-21 13:04:55"
+      },
+      {
+        "id": 846,
+        "reference": "E-20261121T130012Z-h04-fast-verified",
+        "stage": "read_back",
+        "detail": {
+          "draft_id": 154,
+          "errors": []
+        },
+        "created_at": "2026-11-21 13:04:55"
+      }
+    ]
+  },
+  "actual_draft": {
+    "id": 154,
+    "reference": "E-20261121T130012Z-h04-fast-verified",
+    "quote_id": "Q-HARBOR-01",
+    "supplier": "Harbor",
+    "sku": "BRG-6204",
+    "quantity": 20,
+    "currency": "CNY",
+    "total": "300.00"
+  }
+}

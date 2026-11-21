@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import json
+import subprocess
 import sys
 import time
 from datetime import UTC, datetime
@@ -34,12 +35,15 @@ def grade(case: dict, job: dict, draft: dict | None) -> bool:
 
 async def evaluate(args: argparse.Namespace) -> None:
     """Preserve every run before writing an aggregate; never overwrite prior results."""
+    effort = running_reasoning_effort()
     cases = json.loads((ROOT / "procurement/evaluation/cases.json").read_text(encoding="utf-8"))
     cases = [case for case in cases if case["split"] == args.split]
     if args.limit:
         cases = cases[: args.limit]
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-    out = ROOT / "procurement/evaluation/results" / (stamp + "-" + args.split)
+    # Earlier runs used the provider default (high); only non-default settings get a suffix.
+    suffix = "" if effort == "high" else f"-effort-{effort}"
+    out = ROOT / "procurement/evaluation/results" / (stamp + "-" + args.split + suffix)
     out.mkdir(parents=True, exist_ok=False)
     semaphore = asyncio.Semaphore(2)
     records = []
@@ -85,12 +89,7 @@ async def evaluate(args: argparse.Namespace) -> None:
             )
             records.append(record)
             print(
-                json.dumps(
-                    {
-                        key: record[key]
-                        for key in ("case_id", "policy", "correct", "elapsed_seconds")
-                    }
-                ),
+                json.dumps({key: record[key] for key in ("case_id", "policy", "correct", "elapsed_seconds")}),
                 flush=True,
             )
 
@@ -98,6 +97,7 @@ async def evaluate(args: argparse.Namespace) -> None:
     summary = {
         "scope": "Synthetic task variants, one real-model trial per case and policy",
         "model": "deepseek-flash",
+        "reasoning_effort": effort,
         "split": args.split,
         "cases": len(cases),
         "policies": {
@@ -110,6 +110,21 @@ async def evaluate(args: argparse.Namespace) -> None:
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(str(out), json.dumps(summary), flush=True)
+
+
+def running_reasoning_effort() -> str:
+    """Read the effort the running containers apply; DeepSeek's default is high."""
+
+    def printenv(service: str, name: str) -> str:
+        command = ["docker", "compose", "-f", "compose.procurement.yml", "exec", "-T"]
+        result = subprocess.run(
+            [*command, service, "printenv", name], check=False, cwd=ROOT, capture_output=True, text=True
+        )
+        return result.stdout.strip()
+
+    if "workbench" not in printenv("skyvern", "OPENAI_COMPATIBLE_API_BASE"):
+        return "high"
+    return printenv("workbench", "PROCUREMENT_REASONING_EFFORT") or "high"
 
 
 if __name__ == "__main__":

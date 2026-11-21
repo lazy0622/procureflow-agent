@@ -88,6 +88,54 @@
       "failure_reasons": {
         "draft_saved_unchecked": 1
       }
+    },
+    {
+      "run": "20261121T124140Z-heldout-effort-low",
+      "trials": 40,
+      "passed": 39,
+      "mean_seconds": 46.36,
+      "p50_seconds": 56.43,
+      "p95_seconds": 77.42,
+      "statuses": {
+        "draft_saved_unchecked": 14,
+        "verified": 14,
+        "review_required": 12
+      },
+      "failure_reasons": {
+        "draft_saved_unchecked": 1
+      }
+    },
+    {
+      "run": "20261121T130012Z-heldout-effort-low",
+      "trials": 40,
+      "passed": 39,
+      "mean_seconds": 52.56,
+      "p50_seconds": 64.38,
+      "p95_seconds": 81.12,
+      "statuses": {
+        "draft_saved_unchecked": 14,
+        "verified": 14,
+        "review_required": 12
+      },
+      "failure_reasons": {
+        "draft_saved_unchecked": 1
+      }
+    },
+    {
+      "run": "20261121T131808Z-heldout",
+      "trials": 40,
+      "passed": 39,
+      "mean_seconds": 53.54,
+      "p50_seconds": 64.06,
+      "p95_seconds": 86.81,
+      "statuses": {
+        "draft_saved_unchecked": 14,
+        "verified": 14,
+        "review_required": 12
+      },
+      "failure_reasons": {
+        "draft_saved_unchecked": 1
+      }
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "run": "20261121T130012Z-heldout-effort-low",
+  "scope": "Draft-creation browser tasks; model time counts calls carrying the job reference",
+  "creation_tasks": 28,
+  "mean": {
+    "seconds": 50.29,
+    "model_calls": 3.25,
+    "model_seconds": 25.07,
+    "actions": 9.11,
+    "action_seconds": 13.88,
+    "other_seconds": 11.35
+  },
+  "share_model": 0.498,
+  "share_actions": 0.276,
+  "share_other": 0.226,
+  "calls_without_job_reference": {
+    "note": "Collection and some check calls hold no job reference; not attributed",
+    "count": 80,
+    "seconds": 339.8
+  }
+}

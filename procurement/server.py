@@ -17,6 +17,7 @@ from procurement.agent import execute_purchase
 from procurement.domain import PurchaseRequest
 from procurement.faults import crash_point
 from procurement.fixtures import offers_for
+from procurement.llm_gateway import router as llm_router
 from procurement.store import IntentConflict, Store
 
 SCENARIOS = {"standard", "expired", "shortage", "mismatch", "missing_currency", "response_loss"}
@@ -82,6 +83,8 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         allow_methods=["GET"],
     )
     app.state.store = store
+    app.state.data_dir = directory
+    app.include_router(llm_router)
 
     async def run(request: PurchaseRequest) -> None:
         try:

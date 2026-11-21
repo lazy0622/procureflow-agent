@@ -1,102 +1,103 @@
 {
-  "scope": "Development and held-out real-model jobs, both policies, all saved runs",
+  "scope": "Real-model jobs, both policies, runs matching: *-development, *-heldout",
   "runs": [
     "20261111T194808Z-development",
     "20261111T195306Z-heldout",
     "20261120T164524Z-heldout",
-    "20261120T170405Z-heldout"
+    "20261120T170405Z-heldout",
+    "20261121T131808Z-heldout"
   ],
-  "jobs": 128,
+  "jobs": 168,
   "job_seconds": {
-    "n": 128,
-    "mean": 48.5662,
-    "p50": 56.875,
-    "p95": 79.12
+    "n": 168,
+    "mean": 49.7506,
+    "p50": 58.83,
+    "p95": 80.38
   },
   "stages": {
     "collection_run": {
       "seconds": {
-        "n": 128,
-        "mean": 12.5004,
-        "p50": 12.3305,
-        "p95": 16.6316
+        "n": 168,
+        "mean": 12.7922,
+        "p50": 12.7694,
+        "p95": 16.5851
       },
       "steps": {
-        "n": 128,
+        "n": 168,
         "mean": 1,
         "p50": 1.0,
         "p95": 1
       },
       "input_tokens": {
-        "n": 128,
-        "mean": 3845.2812,
+        "n": 168,
+        "mean": 3850.0833,
         "p50": 3542.0,
         "p95": 5698
       },
       "output_tokens": {
-        "n": 128,
-        "mean": 1687.4844,
-        "p50": 1640.5,
-        "p95": 2470
+        "n": 168,
+        "mean": 1671.75,
+        "p50": 1605.0,
+        "p95": 2368
       },
       "reasoning_tokens": {
-        "n": 128,
-        "mean": 1232.3984,
-        "p50": 1183.5,
-        "p95": 1974
+        "n": 168,
+        "mean": 1217.369,
+        "p50": 1177.0,
+        "p95": 1878
       }
     },
     "creation_run": {
       "seconds": {
-        "n": 90,
-        "mean": 44.2757,
-        "p50": 41.2324,
-        "p95": 63.9993
+        "n": 118,
+        "mean": 45.6985,
+        "p50": 44.0056,
+        "p95": 64.2698
       },
       "steps": {
-        "n": 90,
-        "mean": 2.0667,
+        "n": 118,
+        "mean": 2.0678,
         "p50": 2.0,
         "p95": 3
       },
       "input_tokens": {
-        "n": 90,
-        "mean": 14775.7556,
+        "n": 118,
+        "mean": 14797.5339,
         "p50": 14414.0,
-        "p95": 18709
+        "p95": 18722
       },
       "output_tokens": {
-        "n": 90,
-        "mean": 5264.6333,
-        "p50": 4823.0,
-        "p95": 7657
+        "n": 118,
+        "mean": 5254.7203,
+        "p50": 4804.0,
+        "p95": 7782
       },
       "reasoning_tokens": {
-        "n": 90,
-        "mean": 2632.4889,
-        "p50": 2280.0,
-        "p95": 4226
+        "n": 118,
+        "mean": 2626.4661,
+        "p50": 2266.0,
+        "p95": 4637
       }
     }
   },
   "share_of_time_in_jobs_that_wrote_a_draft": {
-    "jobs": 90,
-    "collection_run": 0.207,
-    "creation_run": 0.707
+    "jobs": 118,
+    "collection_run": 0.205,
+    "creation_run": 0.714
   },
   "creation_reasoning_share_of_output": 0.5,
   "cost_usd_per_job": {
     "peak": {
-      "n": 128,
+      "n": 168,
       "mean": 0.0107,
-      "p50": 0.013,
-      "p95": 0.0166
+      "p50": 0.0129,
+      "p95": 0.0167
     },
     "off_peak": {
-      "n": 128,
+      "n": 168,
       "mean": 0.0054,
       "p50": 0.0065,
-      "p95": 0.0083
+      "p95": 0.0084
     }
   },
   "browser_runs_without_token_counter": 0,

@@ -6,6 +6,7 @@ Cost uses DeepSeek's published deepseek-flash list prices (USD per 1M tokens, ch
 Reasoning tokens are a subset of output tokens and are not added again.
 """
 
+import argparse
 import json
 from datetime import datetime
 from pathlib import Path
@@ -13,11 +14,6 @@ from statistics import mean, median
 
 ROOT = Path(__file__).resolve().parents[1]
 EVAL = ROOT / "procurement/evaluation"
-RUNS = sorted(
-    path.parent.name
-    for pattern in ("*-development/summary.json", "*-heldout/summary.json")
-    for path in (EVAL / "results").glob(pattern)
-)
 PRICES = {"peak": (0.30, 1.20), "off_peak": (0.15, 0.60)}
 
 
@@ -41,7 +37,10 @@ def describe(values: list[float]) -> dict | None:
     }
 
 
-def analyze() -> dict:
+def analyze(patterns: list[str], out_name: str) -> dict:
+    runs = sorted(
+        path.parent.name for pattern in patterns for path in (EVAL / "results").glob(f"{pattern}/summary.json")
+    )
     tokens = {m["run_id"]: m for m in json.loads((EVAL / "step-metrics.json").read_text())}
     stages: dict[str, dict[str, list[float]]] = {
         name: {
@@ -57,7 +56,7 @@ def analyze() -> dict:
     write_jobs: list[tuple[float, float, float]] = []
     job_costs: dict[str, list[float]] = {name: [] for name in PRICES}
     missing_counters = 0
-    for run in RUNS:
+    for run in runs:
         for path in sorted((EVAL / "results" / run).glob("*.json")):
             if path.name in {"summary.json", "manifest.json"}:
                 continue
@@ -98,8 +97,8 @@ def analyze() -> dict:
     write_total = sum(job for job, _, _ in write_jobs)
     creation = stages["creation_run"]
     payload = {
-        "scope": "Development and held-out real-model jobs, both policies, all saved runs",
-        "runs": RUNS,
+        "scope": "Real-model jobs, both policies, runs matching: " + ", ".join(patterns),
+        "runs": runs,
         "jobs": len(job_totals),
         "job_seconds": total,
         "stages": {name: {key: describe(values) for key, values in bucket.items()} for name, bucket in stages.items()},
@@ -119,10 +118,14 @@ def analyze() -> dict:
             "Cache-hit discounts are ignored; exported counters report 0 cached tokens.",
         ],
     }
-    out = EVAL / "latency-cost.json"
+    out = EVAL / out_name
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return payload
 
 
 if __name__ == "__main__":
-    print(json.dumps(analyze(), ensure_ascii=False, indent=2))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--runs", nargs="+", default=["*-development", "*-heldout"], help="run-directory globs")
+    parser.add_argument("--out", default="latency-cost.json")
+    args = parser.parse_args()
+    print(json.dumps(analyze(args.runs, args.out), ensure_ascii=False, indent=2))

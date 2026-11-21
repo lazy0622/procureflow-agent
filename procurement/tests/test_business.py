@@ -1,5 +1,6 @@
 """Business contracts and failure boundaries; these tests do not call an LLM."""
 
+import json
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
 
@@ -345,3 +346,43 @@ def test_confirmation_survives_restart_and_blocks_if_quote_changes(tmp_path, mon
         assert job["status"] == "review_required"
         assert job["result"]["errors"] == ["quote_changed_after_confirmation"]
         assert client.get("/api/drafts/PO-test").status_code == 404
+
+
+def test_model_gateway_sets_reasoning_effort_and_forwards_caller_key(tmp_path, monkeypatch):
+    import httpx
+
+    seen = {}
+
+    def upstream(request: httpx.Request) -> httpx.Response:
+        seen["url"] = str(request.url)
+        seen["auth"] = request.headers["authorization"]
+        seen["body"] = json.loads(request.content)
+        return httpx.Response(200, json={"choices": []})
+
+    real_client = httpx.AsyncClient
+
+    def client_with_mock(**kwargs):
+        return real_client(transport=httpx.MockTransport(upstream), **kwargs)
+
+    monkeypatch.setattr("procurement.llm_gateway.httpx.AsyncClient", client_with_mock)
+    monkeypatch.setenv("PROCUREMENT_LLM_UPSTREAM", "https://provider.test/v1")
+    body = {
+        "model": "deepseek-flash",
+        "messages": [{"role": "user", "content": 'Fill {"reference":"PO-7","total":"1"}'}],
+    }
+    with TestClient(create_app(tmp_path)) as client:
+        monkeypatch.setenv("PROCUREMENT_REASONING_EFFORT", "low")
+        response = client.post("/llm/v1/chat/completions", json=body, headers={"Authorization": "Bearer caller"})
+        assert response.status_code == 200
+        assert seen == {
+            "url": "https://provider.test/v1/chat/completions",
+            "auth": "Bearer caller",
+            "body": {**body, "reasoning_effort": "low"},
+        }
+        monkeypatch.setenv("PROCUREMENT_REASONING_EFFORT", "")
+        client.post("/llm/v1/chat/completions", json=body)
+        assert "reasoning_effort" not in seen["body"]
+        assert client.post("/llm/v1/chat/completions", json={**body, "stream": True}).status_code == 400
+    calls = [json.loads(line) for line in (tmp_path / "llm-calls.jsonl").read_text().splitlines()]
+    assert [(c["reference"], c["reasoning_effort"]) for c in calls] == [("PO-7", "low"), ("PO-7", None)]
+    assert "Fill" not in (tmp_path / "llm-calls.jsonl").read_text()
