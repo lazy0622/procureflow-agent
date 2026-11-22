@@ -83,7 +83,7 @@ flowchart LR
 
 第三条让浏览器 Agent 填错字段、确认后计划被改、任务已结束后补写，都在后台写入边界被拒绝，不再只依赖事后回读发现。模型直选和无 Agent 基线需要不经确认写入，只能在显式评测模式 `PROCUREMENT_ALLOW_UNCONFIRMED_WRITES=1` 下运行；这个模式也不会放行要求确认却未确认的任务。
 
-并发方面有两项测试：16 个线程同时确认同一计划只成功 1 次、只记 1 条确认事件；16 个线程同时写同一草稿只插入 1 条。这是单机 SQLite 事务（`BEGIN IMMEDIATE`）下的正确性，不是吞吐或多实例结果。
+并发方面有两项测试：用 8 个线程同时发出 16 次确认，只成功 1 次、只记 1 条确认事件；同样发出 16 次草稿写入，只插入 1 条。这是单机 SQLite 事务（`BEGIN IMMEDIATE`）下的正确性，不是吞吐或多实例结果。
 
 真实验证（[`scripts/mcp_agent_e2e.py`](scripts/mcp_agent_e2e.py)，结果 [`mcp-e2e.json`](procurement/evaluation/mcp-e2e.json)）：DeepSeek 通过 stdio 拿到工具后，自己调用 `propose_purchase` 和 `get_purchase`，回答“方案已准备好，需要人确认，我不能自己确认”，并说明北线报价因为不能整箱凑出 25 件被排除。确认前后台没有草稿；人工确认后核验通过，草稿 1 张；重复提交复用原任务，换数量被拒绝。7 项检查全部通过。
 
