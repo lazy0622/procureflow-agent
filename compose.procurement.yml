@@ -60,6 +60,10 @@ services:
       SKYVERN_CREDENTIALS_FILE: /credentials/credentials.toml
       PROCUREMENT_CRASH_AT: ${PROCUREMENT_CRASH_AT:-}
       PROCUREMENT_REASONING_EFFORT: ${PROCUREMENT_REASONING_EFFORT:-}
+      # name=token pairs for people allowed to confirm plans; empty disables confirmation.
+      PROCUREMENT_APPROVER_TOKENS: ${PROCUREMENT_APPROVER_TOKENS:-}
+      # 1 only for model-only / no-agent baseline evaluations that write without confirmation.
+      PROCUREMENT_ALLOW_UNCONFIRMED_WRITES: ${PROCUREMENT_ALLOW_UNCONFIRMED_WRITES:-0}
     ports:
       - 127.0.0.1:8091:8091
     volumes:

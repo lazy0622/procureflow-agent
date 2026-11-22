@@ -13,6 +13,10 @@ class IntentConflict(ValueError):
     """A purchase reference was reused for a different payload."""
 
 
+class WriteNotAuthorized(PermissionError):
+    """An ERP draft write that does not match an approved, in-progress purchase plan."""
+
+
 class Store:
     """Persist jobs, stage events and synthetic ERP records in SQLite."""
 
@@ -107,19 +111,54 @@ class Store:
 
     def create_draft(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Simulate an ERP with a unique purchase-reference constraint."""
-        reference = payload["reference"]
         with self.connect() as db:
             db.execute("BEGIN IMMEDIATE")
-            row = db.execute("SELECT * FROM drafts WHERE reference=?", (reference,)).fetchone()
-            if row:
-                if json.loads(row["payload"]) != payload:
-                    raise IntentConflict("An existing draft has different business fields")
-                return {"id": row["id"], **payload, "reused": True}
-            cursor = db.execute(
-                "INSERT INTO drafts(reference,payload) VALUES(?,?)",
-                (reference, json.dumps(payload, ensure_ascii=False)),
-            )
-            return {"id": cursor.lastrowid, **payload, "reused": False}
+            return self._insert_draft(db, payload)
+
+    def create_authorized_draft(
+        self, payload: dict[str, Any], plan_hash: str, allow_unconfirmed: bool
+    ) -> dict[str, Any]:
+        """Write a draft only for the task's approved plan, checked in the same transaction.
+
+        The job must be in ``creating_draft`` and its plan fingerprint must equal the draft's.
+        A human-confirmed fingerprint is required unless the explicit evaluation mode allows
+        a task that was submitted without confirmation (and tasks with no job at all, used by
+        the no-agent baselines).
+        """
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT request, status, result FROM jobs WHERE reference=?",
+                (payload["reference"],),
+            ).fetchone()
+            if row is None:
+                if not allow_unconfirmed:
+                    raise WriteNotAuthorized("no_purchase_task")
+            else:
+                request = json.loads(row["request"])
+                result = json.loads(row["result"]) if row["result"] else {}
+                if row["status"] != "creating_draft":
+                    raise WriteNotAuthorized("task_not_writing")
+                if result.get("plan_hash") != plan_hash:
+                    raise WriteNotAuthorized("draft_differs_from_plan")
+                needs_approval = request.get("confirm_before_write") or not allow_unconfirmed
+                if needs_approval and result.get("confirmed_plan_hash") != plan_hash:
+                    raise WriteNotAuthorized("plan_not_approved")
+            return self._insert_draft(db, payload)
+
+    @staticmethod
+    def _insert_draft(db: sqlite3.Connection, payload: dict[str, Any]) -> dict[str, Any]:
+        reference = payload["reference"]
+        row = db.execute("SELECT * FROM drafts WHERE reference=?", (reference,)).fetchone()
+        if row:
+            if json.loads(row["payload"]) != payload:
+                raise IntentConflict("An existing draft has different business fields")
+            return {"id": row["id"], **payload, "reused": True}
+        cursor = db.execute(
+            "INSERT INTO drafts(reference,payload) VALUES(?,?)",
+            (reference, json.dumps(payload, ensure_ascii=False)),
+        )
+        return {"id": cursor.lastrowid, **payload, "reused": False}
 
     def draft(self, reference: str) -> dict[str, Any] | None:
         """Read the actual synthetic ERP record by business reference."""
@@ -147,7 +186,7 @@ class Store:
                 == 1
             )
 
-    def confirm_job(self, reference: str, plan_hash: str) -> str:
+    def confirm_job(self, reference: str, plan_hash: str, approver: str) -> str:
         """Atomically approve an awaiting_confirmation plan when its hash matches."""
         with self.connect() as db:
             db.execute("BEGIN IMMEDIATE")
@@ -162,6 +201,7 @@ class Store:
             if not plan_hash or result.get("plan_hash") != plan_hash:
                 return "hash_mismatch"
             result["confirmed_plan_hash"] = plan_hash
+            result["confirmed_by"] = approver
             result["confirmed_at"] = datetime.now(UTC).isoformat()
             updated = db.execute(
                 "UPDATE jobs SET status='queued', result=? "
@@ -175,7 +215,7 @@ class Store:
                 (
                     reference,
                     "plan_confirmed",
-                    json.dumps({"plan_hash": plan_hash}, ensure_ascii=False),
+                    json.dumps({"plan_hash": plan_hash, "approver": approver}, ensure_ascii=False),
                 ),
             )
             return "confirmed"

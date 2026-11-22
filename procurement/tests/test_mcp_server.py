@@ -7,6 +7,7 @@ import httpx
 import pytest
 from mcp.shared.memory import create_connected_server_and_client_session
 
+from procurement.domain import PurchasePlan, plan_digest
 from procurement.fixtures import offers_for
 from procurement.mcp_server import build_server
 from procurement.server import create_app
@@ -32,12 +33,14 @@ def workbench(tmp_path, monkeypatch):
             output = {"offers": offers_for("standard"), "selected_quote_id": None, "explanation": ""}
             return {"run_id": "tsk_collect", "status": "completed", "output": output}
         plan = json.loads(prompt.split("values: ", 1)[1].split(". Do not pay", 1)[0])
-        app.state.store.create_draft(plan)
+        digest = plan_digest(PurchasePlan.model_validate(plan))
+        app.state.store.create_authorized_draft(plan, digest, False)
         return {"run_id": "tsk_write", "status": "completed", "output": None}
 
     # The agent re-reads the source API before writing; send it to the same app.
     monkeypatch.setattr("procurement.agent.httpx.AsyncClient", lambda *a, **k: in_process())
     monkeypatch.setattr(SkyvernClient, "run", fake_run)
+    monkeypatch.setenv("PROCUREMENT_APPROVER_TOKENS", "alice=approver-secret")
     return app, in_process, browser_runs
 
 
@@ -84,7 +87,11 @@ async def test_propose_stops_for_a_person_and_is_idempotent(workbench):
         # The person confirms in the workbench, outside the MCP server.
         job = app.state.store.job("PO-mcp")
         async with client() as http:
-            confirm = await http.post("/api/jobs/PO-mcp/confirm", json={"plan_hash": job["result"]["plan_hash"]})
+            confirm = await http.post(
+                "/api/jobs/PO-mcp/confirm",
+                json={"plan_hash": job["result"]["plan_hash"]},
+                headers={"Authorization": "Bearer approver-secret"},
+            )
             assert confirm.status_code == 202
         for _ in range(200):
             done = structured(await session.call_tool("get_purchase", {"reference": "PO-mcp"}))

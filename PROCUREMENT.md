@@ -115,6 +115,8 @@ python scripts/evaluate_procurement.py --split heldout
 
 ### 重复试验、延迟成本与崩溃恢复（2026-11-21）
 
+（2026-11-22 增补）**写入授权**：提交默认必须写前确认；确认接口需审批口令并记录确认人；采购后台在同一事务内校验任务状态、计划摘要和已确认摘要后才写草稿。对照实验改由显式评测模式 `PROCUREMENT_ALLOW_UNCONFIRMED_WRITES=1` 运行。授权启用后崩溃恢复重跑 3/3、MCP 端到端重跑 7/7；新增授权与并发测试，共 44 项通过。
+
 - **四次独立重复**（`scripts/summarize_repeats.py` → `procurement/evaluation/heldout-repeats.json`）：模型直接选报价 76/80，pass^4 = 0.95，h03 四次全错；业务规则 80/80，pass^4 = 1.0。
 - **分阶段延迟与成本**（`scripts/analyze_latency_cost.py` → `procurement/evaluation/latency-cost.json`）：168 次作业均值 49.8s、p95 80.4s；写草稿的作业中浏览器填写占 71.4% 耗时，填写输出 token 中 50% 为推理 token；按 DeepSeek 公开价估算 0.0107 / 0.0054 美元每次（高峰 / 低谷）。
 - **进程崩溃恢复**（`procurement/faults.py`、`scripts/crash_recovery_test.py` → `procurement/evaluation/crash-recovery.json`）：在 `after_draft_commit`、`before_read_back`、`before_browser_write` 三处 `os._exit(70)`，重启后为 `interrupted`，恢复后 3/3 为 `verified` 且每个单号 1 张草稿。钩子仅在设置 `PROCUREMENT_CRASH_AT` 时生效。

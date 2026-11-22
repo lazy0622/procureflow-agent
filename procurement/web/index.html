@@ -74,6 +74,9 @@
     <div id="events" class="timeline"></div>
     <div id="summary"></div>
     <div class="actions">
+      <label id="approver-row" hidden
+        >审批口令<input id="approver_token" type="password" autocomplete="off"
+      /></label>
       <button id="confirm" hidden>确认方案并填写草稿</button>
       <button id="resume" hidden>恢复此任务</button>
     </div>
@@ -207,6 +210,7 @@
     const confirmButton = document.querySelector("#confirm");
     confirmButton.hidden =
       job.status !== "awaiting_confirmation" || !result.plan_hash;
+    document.querySelector("#approver-row").hidden = confirmButton.hidden;
     confirmButton.dataset.planHash = result.plan_hash || "";
     document.querySelector("#resume").hidden = ![
       "failed",
@@ -274,12 +278,23 @@
         "/api/jobs/" + encodeURIComponent(activeReference) + "/confirm",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer " + document.querySelector("#approver_token").value,
+          },
           body: JSON.stringify({ plan_hash: btn.dataset.planHash }),
         },
       );
       if (response.ok) watch();
-      else showError(new Error("采购方案确认失败或报价已变化"));
+      else
+        showError(
+          new Error(
+            response.status === 401
+              ? "审批口令无效"
+              : "采购方案确认失败或报价已变化",
+          ),
+        );
     } finally {
       btn.disabled = false;
     }

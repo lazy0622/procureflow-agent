@@ -14,6 +14,7 @@ procurement/evaluation/mcp-e2e.json.
 
 import asyncio
 import json
+import os
 import sys
 import time
 from datetime import UTC, datetime
@@ -122,6 +123,10 @@ async def main() -> None:
                 confirm = await http.post(
                     f"/api/jobs/{reference}/confirm",
                     json={"plan_hash": job["result"]["plan_hash"]},
+                    headers={
+                        "Authorization": "Bearer "
+                        + os.environ.get("PROCUREMENT_APPROVER_TOKENS", "").split(",")[0].partition("=")[2]
+                    },
                 )
                 report["human_confirmation_status"] = confirm.status_code
         status = None

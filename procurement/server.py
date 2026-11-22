@@ -1,6 +1,7 @@
 """Local workbench and synthetic supplier/ERP applications for ProcureFlow."""
 
 import asyncio
+import hmac
 import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -14,13 +15,30 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from procurement.agent import execute_purchase
-from procurement.domain import PurchaseRequest
+from procurement.domain import PurchasePlan, PurchaseRequest, plan_digest
 from procurement.faults import crash_point
 from procurement.fixtures import offers_for
 from procurement.llm_gateway import router as llm_router
-from procurement.store import IntentConflict, Store
+from procurement.store import IntentConflict, Store, WriteNotAuthorized
 
 SCENARIOS = {"standard", "expired", "shortage", "mismatch", "missing_currency", "response_loss"}
+
+
+def allow_unconfirmed_writes() -> bool:
+    """Explicit evaluation mode for model-only and no-agent baselines; off by default."""
+    return os.environ.get("PROCUREMENT_ALLOW_UNCONFIRMED_WRITES") == "1"
+
+
+def approver_for(authorization: str | None) -> str | None:
+    """Map a bearer token to an approver from PROCUREMENT_APPROVER_TOKENS (name=token,...)."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    presented = authorization.removeprefix("Bearer ").strip()
+    for entry in os.environ.get("PROCUREMENT_APPROVER_TOKENS", "").split(","):
+        name, _, token = entry.strip().partition("=")
+        if name and token and hmac.compare_digest(token.encode(), presented.encode()):
+            return name
+    return None
 
 
 class DraftInput(BaseModel):
@@ -185,6 +203,8 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
 
     @app.post("/api/jobs", status_code=202)
     async def submit(request: PurchaseRequest) -> dict:
+        if not request.confirm_before_write and not allow_unconfirmed_writes():
+            raise HTTPException(403, "Purchase tasks must stop for human confirmation")
         try:
             fresh = store.submit(request.reference, request.model_dump(mode="json"))
         except IntentConflict as exc:
@@ -215,8 +235,13 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         return {"reference": reference, "status": "queued"}
 
     @app.post("/api/jobs/{reference}/confirm", status_code=202)
-    async def confirm(reference: str, body: ConfirmInput) -> dict:
-        outcome = store.confirm_job(reference, body.plan_hash)
+    async def confirm(reference: str, body: ConfirmInput, request: Request) -> dict:
+        if not os.environ.get("PROCUREMENT_APPROVER_TOKENS"):
+            raise HTTPException(503, "No approver is configured; confirmation is disabled")
+        approver = approver_for(request.headers.get("authorization"))
+        if approver is None:
+            raise HTTPException(401, "A valid approver token is required")
+        outcome = store.confirm_job(reference, body.plan_hash, approver)
         if outcome == "not_found":
             raise HTTPException(404, "Purchase task not found")
         if outcome == "invalid_status":
@@ -227,7 +252,12 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         if job is None:
             raise HTTPException(404, "Purchase task not found")
         launch(PurchaseRequest.model_validate(job["request"]))
-        return {"reference": reference, "status": "queued", "plan_hash": body.plan_hash}
+        return {
+            "reference": reference,
+            "status": "queued",
+            "plan_hash": body.plan_hash,
+            "approver": approver,
+        }
 
     @app.get("/purchasing", response_class=HTMLResponse)
     def purchasing(reference: str = "", lose_response: bool = False) -> str:
@@ -262,7 +292,14 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
     async def save_draft(request: Request, lose_response: bool = False) -> RedirectResponse:
         try:
             payload = DraftInput.model_validate(dict(await request.form()))
-            record = store.create_draft(payload.model_dump(mode="json"))
+            fields = payload.model_dump(mode="json")
+            record = store.create_authorized_draft(
+                fields,
+                plan_digest(PurchasePlan.model_validate(fields)),
+                allow_unconfirmed_writes(),
+            )
+        except WriteNotAuthorized as exc:
+            raise HTTPException(403, f"Draft write not authorized: {exc}") from exc
         except IntentConflict as exc:
             raise HTTPException(409, str(exc)) from exc
         except ValueError as exc:

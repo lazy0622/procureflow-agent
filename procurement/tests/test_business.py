@@ -8,10 +8,12 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from procurement.domain import PurchaseRequest, choose_offer, verify_draft
+from procurement.domain import PurchaseRequest, choose_offer, plan_digest, verify_draft
 from procurement.fixtures import offers_for
 from procurement.server import create_app
-from procurement.store import IntentConflict, Store
+from procurement.store import IntentConflict, Store, WriteNotAuthorized
+
+APPROVER = {"Authorization": "Bearer approver-secret"}
 
 
 def request(**overrides):
@@ -24,6 +26,19 @@ def request(**overrides):
             **overrides,
         }
     )
+
+
+def writing_job(store, confirmed=True, **overrides):
+    """Put a task into creating_draft with its plan, optionally approved by a person."""
+    purchase = request(**overrides)
+    store.submit(purchase.reference, purchase.model_dump(mode="json"))
+    plan, _ = choose_offer(purchase, offers_for("standard"))
+    digest = plan_digest(plan)
+    result = {"plan": plan.model_dump(mode="json"), "plan_hash": digest}
+    if confirmed:
+        result["confirmed_plan_hash"] = digest
+    store.finish(purchase.reference, "creating_draft", result)
+    return plan, digest
 
 
 @pytest.mark.parametrize(
@@ -129,9 +144,9 @@ def test_restart_is_explicit_and_resume_admission_is_atomic(tmp_path):
 
 def test_erp_response_loss_does_not_imply_write_failure(tmp_path):
     app = create_app(tmp_path)
-    plan, _ = choose_offer(request(), offers_for("standard"))
-    payload = plan.model_dump(mode="json")
     with TestClient(app) as client:
+        plan, _ = writing_job(app.state.store, confirm_before_write=True)
+        payload = plan.model_dump(mode="json")
         response = client.post("/purchasing?lose_response=1", data=payload)
         assert response.status_code == 503
         saved = client.get("/api/drafts/PO-test").json()
@@ -141,7 +156,78 @@ def test_erp_response_loss_does_not_imply_write_failure(tmp_path):
         assert response.status_code == 200
         assert client.get("/api/drafts/PO-test").json()["id"] == saved["id"]
         response = client.post("/purchasing", data={**payload, "quantity": 21})
-        assert response.status_code == 409
+        assert response.status_code == 403
+
+
+def test_erp_write_boundary_requires_the_approved_in_progress_plan(tmp_path):
+    store = Store(tmp_path / "jobs.db")
+    plan, _ = choose_offer(request(), offers_for("standard"))
+    fields = plan.model_dump(mode="json")
+    digest = plan_digest(plan)
+    with pytest.raises(WriteNotAuthorized, match="no_purchase_task"):
+        store.create_authorized_draft(fields, digest, allow_unconfirmed=False)
+
+    writing_job(store, confirmed=False, confirm_before_write=True)
+    with pytest.raises(WriteNotAuthorized, match="plan_not_approved"):
+        store.create_authorized_draft(fields, digest, allow_unconfirmed=False)
+    # Evaluation mode does not waive approval for a task that asked for it.
+    with pytest.raises(WriteNotAuthorized, match="plan_not_approved"):
+        store.create_authorized_draft(fields, digest, allow_unconfirmed=True)
+
+    other = {**fields, "quantity": 30}
+    with pytest.raises(WriteNotAuthorized, match="draft_differs_from_plan"):
+        store.create_authorized_draft(other, "0" * 64, allow_unconfirmed=False)
+
+    job = store.job("PO-test")
+    store.finish("PO-test", "verified", {**job["result"], "confirmed_plan_hash": digest})
+    with pytest.raises(WriteNotAuthorized, match="task_not_writing"):
+        store.create_authorized_draft(fields, digest, allow_unconfirmed=False)
+    assert store.draft("PO-test") is None
+
+
+def test_evaluation_mode_admits_only_tasks_submitted_without_confirmation(tmp_path):
+    store = Store(tmp_path / "jobs.db")
+    plan, digest = writing_job(store, confirmed=False)
+    fields = plan.model_dump(mode="json")
+    with pytest.raises(WriteNotAuthorized, match="plan_not_approved"):
+        store.create_authorized_draft(fields, digest, allow_unconfirmed=False)
+    assert store.create_authorized_draft(fields, digest, allow_unconfirmed=True)["reused"] is False
+    baseline = {**fields, "reference": "PO-baseline"}
+    assert store.create_authorized_draft(baseline, "x", allow_unconfirmed=True)["reused"] is False
+
+
+def test_unconfirmed_submission_is_refused_outside_evaluation_mode(tmp_path, monkeypatch):
+    monkeypatch.delenv("PROCUREMENT_ALLOW_UNCONFIRMED_WRITES", raising=False)
+    with TestClient(create_app(tmp_path)) as client:
+        response = client.post("/api/jobs", json=request().model_dump(mode="json"))
+        assert response.status_code == 403
+        assert client.get("/api/jobs/PO-test").status_code == 404
+
+
+def test_concurrent_confirmations_and_draft_writes_have_one_effect(tmp_path):
+    store = Store(tmp_path / "jobs.db")
+    purchase = request(confirm_before_write=True)
+    store.submit(purchase.reference, purchase.model_dump(mode="json"))
+    plan, _ = choose_offer(purchase, offers_for("standard"))
+    digest = plan_digest(plan)
+    store.finish(
+        purchase.reference,
+        "awaiting_confirmation",
+        {"plan": plan.model_dump(mode="json"), "plan_hash": digest},
+    )
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        outcomes = list(pool.map(lambda i: store.confirm_job("PO-test", digest, f"a{i}"), range(16)))
+    assert outcomes.count("confirmed") == 1
+    assert sum(e["stage"] == "plan_confirmed" for e in store.job("PO-test")["events"]) == 1
+
+    store.finish("PO-test", "creating_draft", store.job("PO-test")["result"])
+    fields = plan.model_dump(mode="json")
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        writes = list(
+            pool.map(lambda _: store.create_authorized_draft(fields, digest, False), range(16))
+        )
+    assert sum(not w["reused"] for w in writes) == 1
+    assert len({w["id"] for w in writes}) == 1
 
 
 def test_hostile_text_is_escaped_in_browser_pages(tmp_path):
@@ -246,11 +332,17 @@ def test_confirmation_gate_pauses_validates_hash_and_writes_on_approval(tmp_path
                 },
             }
         plan = json.loads(prompt.split("values: ", 1)[1].split(". Do not pay", 1)[0])
-        app.state.store.create_draft(plan)
+        app.state.store.create_authorized_draft(plan, plan_digest_of(plan), False)
         return {"run_id": "tsk_write", "status": "completed", "output": None}
+
+    from procurement.domain import PurchasePlan
+
+    def plan_digest_of(fields):
+        return plan_digest(PurchasePlan.model_validate(fields))
 
     monkeypatch.setattr("procurement.agent.httpx.AsyncClient", FakeAsyncClient)
     monkeypatch.setattr(SkyvernClient, "run", fake_run)
+    monkeypatch.delenv("PROCUREMENT_APPROVER_TOKENS", raising=False)
     app = create_app(tmp_path)
     payload = request(confirm_before_write=True).model_dump(mode="json")
 
@@ -266,17 +358,27 @@ def test_confirmation_gate_pauses_validates_hash_and_writes_on_approval(tmp_path
         assert client.get("/api/drafts/PO-test").status_code == 404
         plan_hash = job["result"]["plan_hash"]
 
-        bad = client.post("/api/jobs/PO-test/confirm", json={"plan_hash": "0" * 64})
+        body = {"plan_hash": plan_hash}
+        url = "/api/jobs/PO-test/confirm"
+        assert client.post(url, json=body, headers=APPROVER).status_code == 503
+        monkeypatch.setenv("PROCUREMENT_APPROVER_TOKENS", "alice=approver-secret")
+        assert client.post(url, json=body).status_code == 401
+        assert client.post(url, json=body, headers={"Authorization": "Bearer guess"}).status_code == 401
+        assert client.get("/api/jobs/PO-test").json()["status"] == "awaiting_confirmation"
+
+        bad = client.post(url, json={"plan_hash": "0" * 64}, headers=APPROVER)
         assert bad.status_code == 409
-        ok = client.post("/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash})
+        ok = client.post(url, json=body, headers=APPROVER)
         assert ok.status_code == 202
-        assert client.post("/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash}).status_code == 409
+        assert ok.json()["approver"] == "alice"
+        assert client.post(url, json=body, headers=APPROVER).status_code == 409
         for _ in range(50):
             job = client.get("/api/jobs/PO-test").json()
             if job["status"] == "verified":
                 break
             time.sleep(0.02)
         assert job["status"] == "verified"
+        assert job["result"]["confirmed_by"] == "alice"
         assert client.get("/api/drafts/PO-test").json()["quote_id"] == "Q-NORTH-01"
         assert len(calls) == 2
 
@@ -323,6 +425,7 @@ def test_confirmation_survives_restart_and_blocks_if_quote_changes(tmp_path, mon
 
     monkeypatch.setattr("procurement.agent.httpx.AsyncClient", FakeAsyncClient)
     monkeypatch.setattr(SkyvernClient, "run", collect_only)
+    monkeypatch.setenv("PROCUREMENT_APPROVER_TOKENS", "alice=approver-secret")
 
     with TestClient(create_app(tmp_path)) as client:
         client.post("/api/jobs", json=request(confirm_before_write=True).model_dump(mode="json"))
@@ -337,7 +440,10 @@ def test_confirmation_survives_restart_and_blocks_if_quote_changes(tmp_path, mon
     current_offers[0]["price"] = "130.00"
     with TestClient(create_app(tmp_path)) as client:
         assert client.get("/api/jobs/PO-test").json()["status"] == "awaiting_confirmation"
-        assert client.post("/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash}).status_code == 202
+        confirmed = client.post(
+            "/api/jobs/PO-test/confirm", json={"plan_hash": plan_hash}, headers=APPROVER
+        )
+        assert confirmed.status_code == 202
         for _ in range(50):
             job = client.get("/api/jobs/PO-test").json()
             if job["status"] == "review_required":

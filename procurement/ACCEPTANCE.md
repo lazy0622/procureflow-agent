@@ -9,7 +9,8 @@
 | 验收项 | 实际结果 | 证据 |
 | --- | --- | --- |
 | 完整业务链路 | DeepSeek + Skyvern 采集报价、填写草稿、回读记录均跑通 | `evaluation/baseline/full-normal.json`、`evaluation/ui-smoke.json` |
-| 合同与 HTTP 集成测试 | 40 项通过（含 3 项 MCP） | `tests/` |
+| 合同与 HTTP 集成测试 | 44 项通过（含 3 项 MCP、2 项并发） | `tests/` |
+| 写入授权（2026-11-22） | 默认拒绝不经确认的提交（403）；确认需审批口令，缺失或错误 401，未配置 503，确认人入审计；后台写入在同一事务内校验任务状态、计划摘要和已确认摘要。运行中的工作台实测：不经确认提交 403、无口令 401、错口令 401、无任务直接写后台 403 | `tests/test_business.py`、`server.py`、`store.py` |
 | 核心模块类型检查 | 5 个业务源码文件通过 mypy | 复核命令见下 |
 | 静态检查 | Ruff 通过 | 复核命令见下 |
 | 开发任务 | 4 个任务，各策略一次；两组均 4/4 | `evaluation/results/20261111T194808Z-development/` |
@@ -76,7 +77,7 @@
 
 ## 崩溃恢复测试
 
-`scripts/crash_recovery_test.py` 通过 `PROCUREMENT_CRASH_AT` 让工作台在指定位置 `os._exit(70)`，模拟进程被杀，不执行任何清理。每个位置一次真实模型作业。
+`scripts/crash_recovery_test.py` 通过 `PROCUREMENT_CRASH_AT` 让工作台在指定位置 `os._exit(70)`，模拟进程被杀，不执行任何清理。每个位置一次真实模型作业。2026-11-22 写入授权启用后，三个案例都改为经审批口令确认后再写入并重跑，仍为 3/3；MCP 端到端同日重跑 7/7。
 
 | 崩溃位置 | 模拟情形 | 恢复路径 | 结果 |
 | --- | --- | --- | --- |
@@ -126,6 +127,8 @@ python scripts/analyze_step_timing.py --run <结果目录名>
 ```
 
 真实模型评测会产生 API 费用。原始结果保留，重跑会创建新目录，不用重跑中最好的一次替换历史结果。
+
+`evaluate_procurement.py`、`compare_procurement_baselines.py` 含不经确认的对照组，需以 `PROCUREMENT_ALLOW_UNCONFIRMED_WRITES=1` 重建工作台后运行；崩溃与 MCP 测试需在当前终端设置与容器相同的 `PROCUREMENT_APPROVER_TOKENS`。
 
 ## 代码历史
 

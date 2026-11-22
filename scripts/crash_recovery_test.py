@@ -18,12 +18,18 @@ ROOT = Path(__file__).resolve().parents[1]
 URL = "http://127.0.0.1:8091"
 COMPOSE = ["docker", "compose", "-f", "compose.procurement.yml"]
 CASES = [
-    # (crash point, confirm before write, what the crash simulates)
-    ("after_draft_commit", False, "ERP committed the draft; process died before replying"),
-    ("before_read_back", False, "browser write finished; process died before verification"),
+    # (crash point, confirm before write, what the crash simulates). Every write is approved,
+    # because the workbench refuses unconfirmed writes outside the evaluation mode.
+    ("after_draft_commit", True, "ERP committed the draft; process died before replying"),
+    ("before_read_back", True, "browser write finished; process died before verification"),
     ("before_browser_write", True, "human confirmed the plan; process died before writing"),
 ]
 TERMINAL = {"verified", "review_required", "failed", "draft_saved_unchecked"}
+# First name=token pair from the same variable the workbench container receives.
+APPROVER = {
+    "Authorization": "Bearer "
+    + os.environ.get("PROCUREMENT_APPROVER_TOKENS", "").split(",")[0].partition("=")[2]
+}
 
 
 def compose(*args: str, crash_at: str = "") -> str:
@@ -96,6 +102,7 @@ def run_case(stamp: str, point: str, confirm: bool, meaning: str) -> dict:
             client.post(
                 f"/api/jobs/{reference}/confirm",
                 json={"plan_hash": job["result"]["plan_hash"]},
+                headers=APPROVER,
             ).raise_for_status()
     for _ in range(200):
         state = container_state()
