@@ -35,6 +35,7 @@ flowchart LR
 | 业务状态 | [`store.py`](procurement/store.py) | 业务意图去重、冲突返回 409、确认门原子放行、重启后标记中断任务 |
 | 编排与核验 | [`agent.py`](procurement/agent.py) | 采集、来源核对、写前重读报价、填写草稿、回读对账与恢复 |
 | 服务与工作台 | [`server.py`](procurement/server.py)、[`web/`](procurement/web/) | 任务接口、确认接口、合成供应商门户与采购后台 |
+| MCP Server | [`mcp_server.py`](procurement/mcp_server.py) | 把查报价、查任务、查草稿和发起采购暴露给任何支持 MCP 的 Agent；写入必须由人在工作台确认 |
 | 测试与评测 | [`tests/`](procurement/tests/)、[`evaluation/`](procurement/evaluation/) | 无模型合同测试、真实模型任务、对照实验原始结果 |
 
 ## 验证结果
@@ -52,11 +53,34 @@ flowchart LR
 | 外部公开站点只读抽取（[books.toscrape.com](https://books.toscrape.com/)，对照实时 HTML） | 固定选择器 Playwright 0/2；Skyvern 2/2（均值 18.148s） |
 | 16 个等价重复请求 | 全部复用原任务，事件数和草稿编号不变；需求冲突返回 409 |
 | 保存成功但返回 503 | 恢复时先查后台已有草稿并对账，不重复填写 |
-| 合同与 HTTP 集成测试 | 36 项通过 |
+| 合同与 HTTP 集成测试 | 40 项通过（含 3 项 MCP） |
 
 19/20 的那一题（h03）：要求采购 25 件，模型选了每箱 10 件、更便宜的报价，等于买 2.5 箱。规则把它标为 `fractional_pack`，改选按件报价。结论只覆盖这 20 个合成变体，不代表通用准确率。
 
 对照实验的结论：目标系统有完整 API 时应该直接调 API；浏览器 Agent 的价值在于页面结构变化时无需写专用选择器，速度不占优。
+
+## 作为 MCP 工具使用
+
+[`mcp_server.py`](procurement/mcp_server.py) 通过 stdio 提供 MCP 工具，调用的是上面同一套任务接口。权限由运维方用 `PROCUREFLOW_MCP_MODE` 选择：
+
+| 模式 | 工具 | 说明 |
+| --- | --- | --- |
+| `readonly`（默认） | `list_offers`、`get_purchase`、`get_draft` | 只读，标注 `readOnlyHint` |
+| `propose` | 以上 + `propose_purchase` | 发起采购时强制写前确认和规则选报价，任务停在待确认，返回给人看的确认链接 |
+
+所有模式都没有确认工具，Agent 不能批准自己发起的写入。采购单号是幂等键：相同请求返回同一任务，同一单号换了参数会被拒绝。
+
+真实验证（[`scripts/mcp_agent_e2e.py`](scripts/mcp_agent_e2e.py)，结果 [`mcp-e2e.json`](procurement/evaluation/mcp-e2e.json)）：DeepSeek 通过 stdio 拿到工具后，自己调用 `propose_purchase` 和 `get_purchase`，回答“方案已准备好，需要人确认，我不能自己确认”，并说明北线报价因为不能整箱凑出 25 件被排除。确认前后台没有草稿；人工确认后核验通过，草稿 1 张；重复提交复用原任务，换数量被拒绝。7 项检查全部通过。
+
+接入 MCP 客户端的配置示例：
+
+```json
+{"mcpServers": {"procureflow": {
+  "command": "python", "args": ["-m", "procurement.mcp_server"],
+  "cwd": "<仓库目录>", "env": {"PROCUREFLOW_MCP_MODE": "propose"}}}}
+```
+
+需要 `mcp` Python 包（开发时 1.30.0）。
 
 ## 本地运行
 
@@ -83,6 +107,7 @@ python -m pytest -c procurement/tests/pytest.ini procurement/tests -q
 - 单进程 SQLite，两个任务槽；中断任务需要人工触发恢复，崩溃测试只覆盖单机。
 - 业务流程是固定的“采集—决策—确认—写入—核验”，不是通用规划框架。
 - 成本按公开价格和 token 计数估算，未与账单核对。
+- MCP 层不提供确认工具，但工作台的确认接口本身没有鉴权；同一台机器上能直接发 HTTP 请求的 Agent 仍可绕过。真实部署需要给确认接口加上人的登录身份。
 
 ## 许可与上游
 

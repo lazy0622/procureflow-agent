@@ -1,0 +1,189 @@
+{
+  "reference": "PO-MCP-034000",
+  "run_at": "2026-11-22T03:40:00.880978+00:00",
+  "readonly_tools": [
+    "get_draft",
+    "get_purchase",
+    "list_offers"
+  ],
+  "propose_tools": {
+    "list_offers": {
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "get_purchase": {
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "get_draft": {
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+    },
+    "propose_purchase": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "agent": {
+    "tool_calls": [
+      {
+        "tool": "propose_purchase",
+        "arguments": {
+          "reference": "PO-MCP-034000",
+          "sku": "BRG-6204",
+          "quantity": 25,
+          "max_lead_days": 5,
+          "currency": "CNY"
+        },
+        "is_error": false,
+        "seconds": 19.5,
+        "result": {
+          "reused_existing_task": false,
+          "reference": "PO-MCP-034000",
+          "status": "awaiting_confirmation",
+          "plan": {
+            "reference": "PO-MCP-034000",
+            "quote_id": "Q-HARBOR-01",
+            "supplier": "Harbor",
+            "sku": "BRG-6204",
+            "quantity": 25,
+            "currency": "CNY",
+            "total": "375.00"
+          },
+          "rejected_offers": [
+            {
+              "quote_id": "Q-NORTH-01",
+              "reasons": [
+                "fractional_pack"
+              ]
+            },
+            {
+              "quote_id": "Q-SUMMIT-01",
+              "reasons": [
+                "currency_mismatch"
+              ]
+            }
+          ],
+          "errors": [],
+          "draft": null,
+          "next_step": "A person must review and confirm this plan in the workbench. This server cannot confirm it.",
+          "review_url": "http://127.0.0.1:8091/?reference=PO-MCP-034000"
+        }
+      },
+      {
+        "tool": "get_purchase",
+        "arguments": {
+          "reference": "PO-MCP-034000"
+        },
+        "is_error": false,
+        "seconds": 0.5,
+        "result": {
+          "reference": "PO-MCP-034000",
+          "status": "awaiting_confirmation",
+          "plan": {
+            "reference": "PO-MCP-034000",
+            "quote_id": "Q-HARBOR-01",
+            "supplier": "Harbor",
+            "sku": "BRG-6204",
+            "quantity": 25,
+            "currency": "CNY",
+            "total": "375.00"
+          },
+          "rejected_offers": [
+            {
+              "quote_id": "Q-NORTH-01",
+              "reasons": [
+                "fractional_pack"
+              ]
+            },
+            {
+              "quote_id": "Q-SUMMIT-01",
+              "reasons": [
+                "currency_mismatch"
+              ]
+            }
+          ],
+          "errors": [],
+          "draft": null,
+          "next_step": "A person must review and confirm this plan in the workbench. This server cannot confirm it.",
+          "review_url": "http://127.0.0.1:8091/?reference=PO-MCP-034000"
+        }
+      }
+    ],
+    "final_answer": "**Outcome: a plan was prepared — but nothing has been purchased yet.** The task is at status `awaiting_confirmation` and needs a person to approve it.\n\n**Proposed plan (PO-MCP-034000)**\n- Supplier: Harbor (quote Q-HARBOR-01)\n- Item: BRG-6204 — 25 pieces\n- Total: **CNY 375.00**\n- Delivery: within your 5-day limit\n\n**Offers rejected by the purchasing rules**\n- Q-NORTH-01 — fractional pack (the pack size doesn't allow exactly 25 pieces)\n- Q-SUMMIT-01 — priced in a currency other than CNY\n\n**Next step:** a person must review and confirm the plan in the workbench:\nhttp://127.0.0.1:8091/?reference=PO-MCP-034000\n\nNo order has been placed, so there's no confirmed price or delivery commitment until someone approves it there. I can't confirm it myself — happy to re-check the status once it's been reviewed."
+  },
+  "status_after_agent": "awaiting_confirmation",
+  "draft_before_confirmation": 404,
+  "human_confirmation_status": 202,
+  "after_confirmation": {
+    "reference": "PO-MCP-034000",
+    "status": "verified",
+    "plan": {
+      "reference": "PO-MCP-034000",
+      "quote_id": "Q-HARBOR-01",
+      "supplier": "Harbor",
+      "sku": "BRG-6204",
+      "quantity": 25,
+      "currency": "CNY",
+      "total": "375.00"
+    },
+    "rejected_offers": [
+      {
+        "quote_id": "Q-NORTH-01",
+        "reasons": [
+          "fractional_pack"
+        ]
+      },
+      {
+        "quote_id": "Q-SUMMIT-01",
+        "reasons": [
+          "currency_mismatch"
+        ]
+      }
+    ],
+    "errors": [],
+    "draft": {
+      "id": 203,
+      "reference": "PO-MCP-034000",
+      "quote_id": "Q-HARBOR-01",
+      "supplier": "Harbor",
+      "sku": "BRG-6204",
+      "quantity": 25,
+      "currency": "CNY",
+      "total": "375.00"
+    }
+  },
+  "draft": {
+    "id": 203,
+    "reference": "PO-MCP-034000",
+    "quote_id": "Q-HARBOR-01",
+    "supplier": "Harbor",
+    "sku": "BRG-6204",
+    "quantity": 25,
+    "currency": "CNY",
+    "total": "375.00"
+  },
+  "repeat_proposal": {
+    "reused_existing_task": true,
+    "status": "verified"
+  },
+  "conflicting_proposal": {
+    "is_error": true,
+    "text": "Error executing tool propose_purchase: Reference PO-MCP-034000 is already used for a different request; choose a new reference"
+  },
+  "checks": {
+    "readonly_has_no_write_tool": true,
+    "no_confirm_tool": true,
+    "agent_used_propose": true,
+    "stopped_before_write": true,
+    "verified_after_person_confirmed": true,
+    "repeat_reused_task": true,
+    "conflict_refused": true
+  },
+  "passed": true
+}

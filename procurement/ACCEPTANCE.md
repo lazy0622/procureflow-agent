@@ -9,7 +9,7 @@
 | 验收项 | 实际结果 | 证据 |
 | --- | --- | --- |
 | 完整业务链路 | DeepSeek + Skyvern 采集报价、填写草稿、回读记录均跑通 | `evaluation/baseline/full-normal.json`、`evaluation/ui-smoke.json` |
-| 合同与 HTTP 集成测试 | 36 项通过 | `tests/` |
+| 合同与 HTTP 集成测试 | 40 项通过（含 3 项 MCP） | `tests/` |
 | 核心模块类型检查 | 5 个业务源码文件通过 mypy | 复核命令见下 |
 | 静态检查 | Ruff 通过 | 复核命令见下 |
 | 开发任务 | 4 个任务，各策略一次；两组均 4/4 | `evaluation/results/20261111T194808Z-development/` |
@@ -17,6 +17,7 @@
 | 保留任务四次独立重复 | 每题每策略 4 次，共 160 次作业：模型直接选报价 76/80，pass^4 = 0.95（h03 四次全错）；业务规则选报价 80/80，pass^4 = 1.0 | `evaluation/heldout-repeats.json` |
 | 分阶段延迟与成本 | 168 次真实作业，单次均值 49.8s、p95 80.4s；写草稿的作业中浏览器填写占 71.4%、报价采集占 20.5%；按 DeepSeek 公开价估算每次 0.0107 美元（高峰）/ 0.0054 美元（低谷） | `evaluation/latency-cost.json` |
 | 推理强度 low 对照 high | 同一晚上 low 两轮、high 一轮，共 120 次作业：准确率不变（low 模型直接选 38/40、规则 40/40）；填写阶段推理 token 少 16.7%，成本少 5.7%；填写耗时没有可分辨的变化 | `evaluation/reasoning-effort.md` |
+| MCP 工具接入 | DeepSeek 经 stdio 调用 MCP 工具发起采购，停在待确认且无草稿；人工确认后核验通过、草稿 1 张；重复提交复用任务、换参数被拒绝；只读模式无写工具；所有模式无确认工具。7/7 通过 | `evaluation/mcp-e2e.json`、`tests/test_mcp_server.py` |
 | 进程崩溃恢复 | 在 3 个位置直接杀掉工作台进程（退出码 70），重启后任务为 `interrupted`，恢复后均为 `verified`，每个单号恰好 1 张草稿 | `evaluation/crash-recovery.json` |
 | 三种实现对照 | 4 个已知任务各一次：直接调 API 4/4（均值 0.145s），固定选择器 Playwright 3/4（2.496s，卡片布局超时），Skyvern 4/4（66.004s） | `evaluation/results/20261113T121839Z-simple-baselines/` |
 | 外部站点只读抽取 | books.toscrape.com 两个分类，对照实时 HTML：固定选择器 Playwright 0/2，Skyvern 2/2（均值 18.148s），无写入 | `evaluation/results/20261113T122452Z-external-sites/` |
